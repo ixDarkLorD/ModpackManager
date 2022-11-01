@@ -232,7 +232,7 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     def mainFile = upload(project_curse_id, jar)
     mainFile.changelog = file('../CHANGELOG.md')
     mainFile.changelogType = 'markdown'
-    mainFile.displayName = "[FORGE] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
+    mainFile.displayName = "[Forge] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
     mainFile.releaseType = project_release_type
     mainFile.addOptional('fancymenu-forge')
     mainFile.addGameVersion("Forge")
