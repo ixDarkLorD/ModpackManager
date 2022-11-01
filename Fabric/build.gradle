@@ -1,0 +1,172 @@
+plugins {
+    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'idea'
+    id 'net.darkhax.curseforgegradle' version '1.0.11'
+}
+
+java.withSourcesJar()
+
+archivesBaseName = "${modid}-fabric"
+
+repositories {
+    maven {
+        name = 'Terraformers'
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    // Minecraft
+    minecraft "com.mojang:minecraft:${mc_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${mc_version}:${parchment_mappings_version}@zip")
+    }
+
+    // Loader
+    modImplementation "net.fabricmc:fabric-loader:${fabric_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${mc_version}"
+
+    // Lib
+    implementation project(":Common")
+    implementation 'com.electronwill.night-config:core:3.6.5'
+    implementation 'com.electronwill.night-config:toml:3.6.5'
+
+    // Mods
+    modCompileOnly "curse.maven:konkrete-416797:4031705"
+    modCompileOnly "curse.maven:fancymenu-fabric-416796:4032642"
+    modImplementation "curse.maven:forge-config-api-port-fabric-547434:3943250" //ForgeConfigAPIPort-v3.2.4
+    modImplementation "com.terraformersmc:modmenu:3.2.3"
+}
+
+loom {
+    //accessWidenerPath = file("src/main/resources/${modid}.accesswidener")
+
+    mixin {
+        defaultRefmapName = "${modid}.refmap.json"
+    }
+
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
+            vmArg "-Dmixin.debug.export=${mixin_debug}"
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run")
+            vmArg "-Dmixin.debug.export=${mixin_debug}"
+        }
+    }
+}
+
+
+processResources {
+    from project(":Common").sourceSets.main.resources
+    exclude("**/quilt.mod.json")
+
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+    inputs.property "modId", 					"${modid}"
+    inputs.property "modName", 					"${mod_name}"
+    inputs.property "modVersion", 				"${mod_version}"
+    inputs.property "modDescription", 			"${mod_description}"
+    inputs.property "modGroup", 				project.group
+    inputs.property "modPageUrl", 				"${mod_page_url}"
+    inputs.property "modIssueUrl", 				"${mod_issue_url}"
+    inputs.property "modSourceUrl", 		    "${mod_source_url}"
+    inputs.property "modAuthor", 				"${mod_author}"
+    inputs.property "modLicense", 				"${mod_license}"
+    inputs.property "minFabricVersion", 		"${min_fabric_version}"
+    inputs.property "minFabricApiVersion", 		"${min_fabric_api_version}"
+    inputs.property "minMinecraftVersion", 		"${min_mc_version}"
+    inputs.property "nextMinecraftVersion", 	rootProject.getNextVersion("${min_mc_version}")
+    inputs.property "packFormat", 				"${pack_format}"
+    inputs.property "mainEntryPoint", 			"${project.group}.core.FabricSetup"
+    inputs.property "clientEntryPoint", 		"${project.group}.core.FabricClientSetup"
+    inputs.property "modFabricEnvironment", 	"${mod_fabric_environment}"
+
+    filesMatching ('fabric.mod.json') {
+        expand (
+                'modId':                	"${modid}",
+                'modName':              	"${mod_name}",
+                'modVersion':           	"${mod_version}",
+                'modDescription':       	"${mod_description}",
+                'modGroup':             	project.group,
+                'modPageUrl':           	"${mod_page_url}",
+                'modIssueUrl':          	"${mod_issue_url}",
+                'modSourceUrl':          	"${mod_source_url}",
+                'modAuthor':            	"${mod_author}",
+                'modLicense':            	"${mod_license}",
+                'minFabricVersion':     	"${min_fabric_version}",
+                'minFabricApiVersion':  	"${min_fabric_api_version}",
+                'minMinecraftVersion':  	"${min_mc_version}",
+                "nextMinecraftVersion": 	rootProject.getNextVersion("${min_mc_version}"),
+                "mainEntryPoint": 			"${project.group}.core.FabricSetup",
+                "clientEntryPoint": 		"${project.group}.core.FabricClientSetup",
+                "modFabricEnvironment":		"${mod_fabric_environment}"
+        )
+    }
+
+    filesMatching ('pack.mcmeta') {
+        expand (
+                'modDescription':       "${mod_description}",
+                "packFormat":           "${pack_format}"
+        )
+    }
+}
+
+compileJava {
+    source project(":Common").sourceSets.main.allSource
+}
+
+sourcesJar {
+    from project(":Common").sourceSets.main.allJava
+}
+
+javadoc {
+    source project(":Common").sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+task publishCurseForge(type: TaskPublishCurseForge) {
+    if (!file('../classified.properties').canRead()) { throw new FileNotFoundException("Could not read properties file") }
+    if (!file('../CHANGELOG.md').canRead()) { throw new FileNotFoundException("Could not read changelog file") }
+
+    disableVersionDetection()
+    def AdminProperties = new Properties()
+    AdminProperties.load(file('../classified.properties').newDataInputStream())
+    apiToken = AdminProperties['curseforge_api_token']
+
+    def mainFile = upload(project_curse_id, jar)
+    mainFile.changelog = file('../CHANGELOG.md')
+    mainFile.changelogType = 'markdown'
+    mainFile.displayName = "[FABRIC] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
+    mainFile.releaseType = project_release_type
+    mainFile.addOptional('fancymenu-fabric')
+    mainFile.addGameVersion("Fabric")
+    project_game_versions.split(",").each {
+        mainFile.addGameVersion(it.trim())
+    }
+}
