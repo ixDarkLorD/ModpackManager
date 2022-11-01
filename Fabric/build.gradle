@@ -161,10 +161,11 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     AdminProperties.load(file('../classified.properties').newDataInputStream())
     apiToken = AdminProperties['curseforge_api_token']
 
-    def mainFile = upload(project_curse_id, jar)
+    File modJar = file("./build/libs/${archivesBaseName}-${project.version}.jar")
+    def mainFile = upload(project_curse_id, modJar)
     mainFile.changelog = file('../CHANGELOG.md')
     mainFile.changelogType = 'markdown'
-    mainFile.displayName = "[FABRIC] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
+    mainFile.displayName = "[Fabric] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
     mainFile.releaseType = project_release_type
     mainFile.addOptional('fancymenu-fabric')
     mainFile.addGameVersion("Fabric")

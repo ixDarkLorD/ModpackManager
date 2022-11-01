@@ -1,7 +1,7 @@
 # Changelog
 This file is for listing all the changes to this project
 
-## v0.2.0 BETA | Nov 1, 2022
+## v0.2.0 BETA | Nov 2, 2022
 - Change project base into `Multi-Loader`
 - Ported to Fabric
 ### Added
