@@ -1,6 +1,10 @@
 # Changelog
 This file is for listing all the changes to this project
 
+## v0.2.1 BETA | Nov 3, 2022
+### Fixed
+- Accessing the `FancyMenu Config` instead creating one! (A Special thanks to **@Keksuccino** for mentioning this! <3)
+
 ## v0.2.0 BETA | Nov 2, 2022
 - Change project base into `Multi-Loader`
 - Ported to Fabric

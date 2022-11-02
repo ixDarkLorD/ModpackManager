@@ -167,6 +167,7 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     mainFile.changelogType = 'markdown'
     mainFile.displayName = "[Fabric] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
     mainFile.releaseType = project_release_type
+    mainFile.addRequirement('forge-config-api-port-fabric')
     mainFile.addOptional('fancymenu-fabric')
     mainFile.addGameVersion("Fabric")
     project_game_versions.split(",").each {
