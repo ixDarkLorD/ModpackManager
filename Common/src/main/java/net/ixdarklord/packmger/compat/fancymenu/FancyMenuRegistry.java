@@ -22,7 +22,7 @@ public class FancyMenuRegistry {
         try {
             FancyMenu.config.setValue("customwindowtitle", title);
         } catch (Exception e) {
-            e.getStackTrace();
+            e.printStackTrace();
         }
     }
 }

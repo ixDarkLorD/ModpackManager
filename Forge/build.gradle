@@ -13,6 +13,7 @@ buildscript {
 
 plugins {
     id 'net.darkhax.curseforgegradle' version '1.0.11'
+    id 'com.modrinth.minotaur' version '2.+'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -223,7 +224,7 @@ publishing {
 
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
-task publishCurseForge(type: TaskPublishCurseForge) {
+task curseforge(type: TaskPublishCurseForge) {
     if (!file('../classified.properties').canRead()) { throw new FileNotFoundException("Could not read properties file") }
     if (!file('../CHANGELOG.md').canRead()) { throw new FileNotFoundException("Could not read changelog file") }
 
@@ -241,5 +242,28 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     mainFile.addGameVersion("Forge")
     project_game_versions.split(",").each {
         mainFile.addGameVersion(it.trim())
+    }
+}
+
+modrinth {
+    if (!file('../classified.properties').canRead()) { throw new FileNotFoundException("Could not read properties file") }
+    if (!file('../CHANGELOG.md').canRead()) { throw new FileNotFoundException("Could not read changelog file") }
+
+    def AdminProperties = new Properties()
+    AdminProperties.load(file('../classified.properties').newDataInputStream())
+    token = AdminProperties['modrinth_api_token']
+
+    projectId = project_modrinth_id
+    versionNumber = project.version
+    versionName = "[Forge] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
+    changelog = file('../CHANGELOG.md').text
+    versionType = project_release_type
+    uploadFile = jar
+    loaders.add 'forge'
+    dependencies {
+        optional.project "fancymenu"
+    }
+    project_game_versions.split(",").each {
+        gameVersions.add(it.trim())
     }
 }
