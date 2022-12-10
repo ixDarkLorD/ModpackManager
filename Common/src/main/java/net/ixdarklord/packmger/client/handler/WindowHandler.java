@@ -114,6 +114,7 @@ public class WindowHandler {
                         data = data.replace(CONFIG_VALUES.get(2), "");
                         data = data.substring(1);
                         IS_STARTUP_TITLE_VISIBLE = Boolean.parseBoolean(data);
+                        LOGGER.debug(IS_STARTUP_TITLE_VISIBLE);
 
                     //STARTUP TITLE TEXT
                     } else if (data.contains(CONFIG_VALUES.get(3)) && data.indexOf(CONFIG_VALUES.get(3)) == 1 && data.indexOf("") == 0) {

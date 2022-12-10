@@ -2,6 +2,10 @@
 This file is for listing all the changes to this project
 
 ## v0.2.1 BETA | Nov 3, 2022
+### Added
+- Translating to Simplified Chinese `zh_cn` (A Special thanks to **@Mccandycube6623** for helping out)
+
+## v0.2.0a BETA | Nov 3, 2022
 ### Fixed
 - Accessing the `FancyMenu Config` instead creating one! (A Special thanks to **@Keksuccino** for mentioning this! <3)
 

@@ -2,6 +2,7 @@ package net.ixdarklord.packmger.event;
 
 import net.ixdarklord.packmger.client.handler.ScreenHandler;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
+import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.config.ConfigHandler;
 import net.ixdarklord.packmger.core.Constants;
 import net.minecraft.client.Minecraft;
@@ -18,12 +19,14 @@ public class ClientEvents {
     public static class ClientForgeModBusEvents {
         @SubscribeEvent
         public static void onConstructMod(final FMLConstructModEvent evt) {
+            ConfigHandler.initializeFiles();
             final ScreenHandler handler = new ScreenHandler();
             MinecraftForge.EVENT_BUS.addListener(handler::onScreenInitPost);
         }
 
         @SubscribeEvent
-        public static void onClientSetup(final FMLClientSetupEvent event) {
+        public static void onClientSetup(final FMLClientSetupEvent evt) {
+            ModCompatibility.registerClient();
             Minecraft.getInstance().getWindow().setTitle(WindowHandler.modifyTitle());
         }
     }
@@ -31,7 +34,7 @@ public class ClientEvents {
     @Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
     public static class ClientForgeEvents {
         @SubscribeEvent
-        public static void onKeyInput(InputEvent.KeyInputEvent event) {
+        public static void onKeyInput(InputEvent.KeyInputEvent evt) {
             KeyEvents.registerEvents(null);
         }
     }
