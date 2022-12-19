@@ -264,3 +264,52 @@ modrinth {
         gameVersions.add(it.trim())
     }
 }
+
+import groovy.json.*
+
+task copyJarToDir(type: Copy) {
+    onlyIf { project.hasProperty('build_jar_output_dir') && project.hasProperty('unique_build_number') }
+    if (project.findProperty('copy_build_jar').toBoolean()) {
+        // shortcut for jar.outputs.files
+        from jar
+        into project.findProperty('build_jar_output_dir')
+        // add build number to be able to distinguish jars when testing thorough official launcher
+        // build number is stored in global gradle.properties
+        rename { fileName -> fileName.replace("v${mod_version}", "v${mod_version}-build.${unique_build_number}") }
+    }
+}
+
+task refreshUpdateJson {
+    onlyIf { project.hasProperty('mod_resources') }
+    doLast {
+        def updateFile = file(project.findProperty('mod_resources').concat(File.separator).concat('update').concat(File.separator).concat("${modid}").concat('.json'))
+        def updateJson
+        if (updateFile.exists() && updateFile.canRead() && updateFile.length() != 0) {
+            updateJson = new JsonSlurper().parseText(updateFile.text)
+            "${project_game_versions}".replaceAll(" ", "").split(",").each { version ->
+                updateJson['promos']["${version}-latest"] = "${mod_version}"
+                // alpha and beta releases will contain 'a' or 'b' char respectively, don't update recommended for those
+                if ("${mod_version}".matches("[^a-zA-Z]+")) {
+                    updateJson['promos']["${version}-recommended"] = "${mod_version}"
+                }
+            }
+        } else {
+            def builder = new JsonBuilder()
+            updateJson = builder {
+                homepage "${mod_page_url}"
+                promos { "${project_game_versions}".replaceAll(" ", "").split(",").each { version ->
+                    "${version}-latest" "${mod_version}"
+                    // alpha and beta releases will contain 'a' or 'b' char respectively, don't update recommended for those
+                    if ("${mod_version}".matches("[^a-zA-Z]+")) {
+                        "${version}-recommended" "${mod_version}"
+                    }
+                } }
+            }
+        }
+        def output = new JsonOutput()
+        updateFile.write(output.prettyPrint(output.toJson(updateJson)))
+    }
+}
+
+build.finalizedBy project.tasks.copyJarToDir, rootProject.tasks.incrementBuildNumber
+[tasks.modrinth, tasks.curseforge].each {it.finalizedBy project.tasks.refreshUpdateJson}

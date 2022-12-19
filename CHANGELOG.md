@@ -1,7 +1,7 @@
 # Changelog
 This file is for listing all the changes to this project
 
-## v0.2.1 BETA | Nov 3, 2022
+## v0.2.1 BETA | Dec 19, 2022
 ### Added
 - Translating to Simplified Chinese `zh_cn` (A Special thanks to **@Mccandycube6623** for helping out)
 
