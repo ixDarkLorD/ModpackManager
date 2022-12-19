@@ -29,16 +29,17 @@ dependencies {
     // Loader
     modImplementation "net.fabricmc:fabric-loader:${fabric_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${mc_version}"
-
-    // Lib
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
-    implementation 'com.electronwill.night-config:core:3.6.5'
-    implementation 'com.electronwill.night-config:toml:3.6.5'
+
+    // Config Dependencies
+    implementation 'com.electronwill.night-config:core:3.6.6'
+    implementation 'com.electronwill.night-config:toml:3.6.6'
+    modImplementation "curse.maven:forge-config-api-port-fabric-547434:3960064" //ForgeConfigAPIPort-v4.2.6
 
     // Mods
     modCompileOnly "curse.maven:konkrete-416797:4031710"
     modCompileOnly "curse.maven:fancymenu-fabric-416796:4032644"
-    modImplementation "curse.maven:forge-config-api-port-fabric-547434:3960064" //ForgeConfigAPIPort-v4.2.6
     modImplementation "com.terraformersmc:modmenu:4.0.6"
 }
 
@@ -198,3 +199,16 @@ modrinth {
         gameVersions.add(it.trim())
     }
 }
+
+task copyJarToDir(type: Copy) {
+    onlyIf { project.hasProperty('build_jar_output_dir') && project.hasProperty('unique_build_number') }
+    if (project.findProperty('copy_build_jar').toBoolean()) {
+        from remapJar
+        into project.findProperty('build_jar_output_dir')
+        // add build number to be able to distinguish jars when testing thorough official launcher
+        // build number is stored in global gradle.properties
+        rename { fileName -> fileName.replace("v${mod_version}", "v${mod_version}-build.${unique_build_number}") }
+    }
+}
+
+build.finalizedBy project.tasks.copyJarToDir, rootProject.tasks.incrementBuildNumber
