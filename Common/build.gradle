@@ -13,10 +13,10 @@ dependencies {
     }
 
     // Mixin Dependencies
-    implementation 'org.ow2.asm:asm-tree:9.2'
-    implementation 'org.ow2.asm:asm-commons:9.2'
-    implementation 'org.ow2.asm:asm-util:9.2'
-    implementation 'org.spongepowered:mixin:0.8.5'
+    compileOnly 'org.ow2.asm:asm-tree:9.2'
+    compileOnly 'org.ow2.asm:asm-commons:9.2'
+    compileOnly 'org.ow2.asm:asm-util:9.2'
+    compileOnly 'org.spongepowered:mixin:0.8.5'
 
     // Config Dependencies
     compileOnly "curse.maven:forge-config-api-port-fabric-547434:3960064" //ForgeConfigAPIPort-v4.2.6
