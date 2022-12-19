@@ -19,8 +19,6 @@ dependencies {
     compileOnly 'org.spongepowered:mixin:0.8.5'
 
     // Config Dependencies
-    compileOnly 'com.electronwill.night-config:core:3.6.5'
-    compileOnly 'com.electronwill.night-config:toml:3.6.5'
     compileOnly "curse.maven:forge-config-api-port-fabric-547434:3943250" //ForgeConfigAPIPort-v3.2.4
 
     // Other Stuff
