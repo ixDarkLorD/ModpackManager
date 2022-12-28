@@ -1,6 +1,9 @@
 # Changelog
 This file is for listing all the changes to this project
 
+## v0.2.1a BETA | Dec 29, 2022
+- Changing the forge version update json URL
+
 ## v0.2.1 BETA | Dec 19, 2022
 ### Added
 - Translating to Simplified Chinese `zh_cn` (A Special thanks to **@Mccandycube6623** for helping out)
