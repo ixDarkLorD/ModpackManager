@@ -3,7 +3,6 @@ package net.ixdarklord.packmger.client.button;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.CurseAPI;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
 import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 import net.ixdarklord.packmger.util.ManagerUtils;
@@ -44,16 +43,15 @@ public class VersionCheckerButton extends ButtonBase {
         int i = 0;
         if (Services.PLATFORM.getPlatformName().equals("Forge")) i = 24;
         if (Services.PLATFORM.getPlatformName().equals("Fabric")) i = 12;
-        modButton = new Button(
-                Services.BUTTON.screenWidth(event) / 2 - 100, Services.BUTTON.screenHeight(event) / 4 + 48 + 24 * 4 - i,
-                200, 20,
-                Component.empty(),
-                button -> {
-                    IS_FIRST_TIME_PRESSED = false;
-                    isActivated = false;
-                    buttonFunction();
-                }
-        );
+
+        modButton = Button.builder(Component.empty(), button -> {
+            IS_FIRST_TIME_PRESSED = false;
+            isActivated = false;
+            buttonFunction();
+        }).bounds(
+                Services.BUTTON.screenWidth(event) / 2 - 100,
+                Services.BUTTON.screenHeight(event) / 4 + 48 + 24 * 4 - i,
+                200, 20).build();
         if (IS_FIRST_TIME_PRESSED) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.press_to_check");
             modButton.setMessage(Component.literal(buttonMessage));
@@ -62,6 +60,7 @@ public class VersionCheckerButton extends ButtonBase {
                 buttonFunction();
             } else {
                 updateButton();
+                adjustAlignment();
             }
         }
         Services.BUTTON.registerButton(event, modButton);
@@ -79,49 +78,49 @@ public class VersionCheckerButton extends ButtonBase {
     }
     @Override
     protected void updateButton() {
-        if (!isURLInvalid(UPDATE_KEY)) {
-            List<String> version = cachedValues.get("version");
-            if (version != null) {
-                String ID = cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID).toString();
-                ID = ID.substring(1, ID.length()-1);
-                if (ID.equals(IDENTIFIER)) {
-                    String NEW_VERSION = cachedValues.get("version").toString().replaceAll("[()\\[\\]{}]", "");
-                    int result = VC.compare(CURRENT_VERSION, NEW_VERSION);
-                    if (result < 0) {
-                        if (WindowHandler.CACHED_NEW_VERSION == null) {
-                            WindowHandler.CACHED_NEW_VERSION = NEW_VERSION;
-                            WindowHandler.updateUpdateHolder();
-                        }
-                        buttonMessage = "\u00A76" + I18n.get("menu.packmger.update_available", NEW_VERSION);
-                        modButton.setMessage(Component.literal(buttonMessage));
-                        isUpdateAvailable = true;
-                    } else {
-                        buttonMessage = "\u00A7f" + I18n.get("menu.packmger.no_updates");
-                        modButton.setMessage(Component.literal(buttonMessage));
-                    }
-                } else {
-                    buttonMessage = "\u00A7c" + I18n.get("menu.packmger.invalid_manifest");
-                    modButton.setMessage(Component.literal(buttonMessage));
-                    logInvalidManifest();
-                }
-            }
-        } else {
+        if (isURLInvalid(UPDATE_KEY)) {
             buttonMessage = "\u00A7c" + I18n.get("menu.packmger.connection_failed");
             modButton.setMessage(Component.literal(buttonMessage));
             logConnectionFailed();
+            return;
         }
-        adjustAlignment();
+
+        String ID = cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID).toString();
+        ID = ID.substring(1, ID.length()-1);
+        if (!ID.equals(IDENTIFIER)) {
+            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.invalid_manifest");
+            modButton.setMessage(Component.literal(buttonMessage));
+            logInvalidManifest();
+            return;
+        }
+
+        if (cachedValues.get("version") != null) {
+            String NEW_VERSION = cachedValues.get("version").toString().replaceAll("[()\\[\\]{}]", "");
+            int result = VC.compare(CURRENT_VERSION, NEW_VERSION);
+            if (result < 0) {
+                if (WindowHandler.CACHED_NEW_VERSION == null) {
+                    WindowHandler.CACHED_NEW_VERSION = NEW_VERSION;
+                    WindowHandler.updateUpdateHolder();
+                }
+                buttonMessage = "\u00A76" + I18n.get("menu.packmger.update_available", NEW_VERSION);
+                modButton.setMessage(Component.literal(buttonMessage));
+                isUpdateAvailable = true;
+            } else {
+                buttonMessage = "\u00A7f" + I18n.get("menu.packmger.no_updates");
+                modButton.setMessage(Component.literal(buttonMessage));
+            }
+        }
     }
 
     private void adjustAlignment() {
         int i = Math.max(0, Minecraft.getInstance().font.width(buttonMessage) - 200);
         if (i > 0) {
             i += 10;
-            modButton.x = modButton.x - (i/2);
+            modButton.setX(modButton.getX() - (i/2));
             modButton.setWidth(modButton.getWidth() + i);
         } else {
             assert Minecraft.getInstance().screen != null;
-            modButton.x = Minecraft.getInstance().screen.width / 2 - 100;
+            modButton.setX(Minecraft.getInstance().screen.width / 2 - 100);
             modButton.setWidth(200);
         }
     }

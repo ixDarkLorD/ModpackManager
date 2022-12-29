@@ -2,7 +2,6 @@ package net.ixdarklord.packmger.client.button;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PlainTextButton;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
@@ -16,10 +15,10 @@ public abstract class ButtonBase {
     void moveButtonsLayout(List<?> listeners, int splitAt) {
         for (var widget : listeners) {
             if (widget instanceof Button button && !(button instanceof PlainTextButton)) {
-                if (splitAt <= button.y) {
-                    button.y += 12;
+                if (splitAt <= button.getY()) {
+                    button.setY(button.getY() + 12);
                 } else {
-                    button.y -= 12;
+                    button.setY(button.getY() - 12);
                 }
             }
         }
