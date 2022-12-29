@@ -124,8 +124,8 @@ dependencies {
     // Common
     implementation project(":Common")
     //compileOnly
-    compileOnly fg.deobf("curse.maven:konkrete-410295:4031719")
-    compileOnly fg.deobf("curse.maven:fancymenu-forge-367706:4032653")
+    compileOnly fg.deobf("curse.maven:konkrete-410295:4136431")
+    compileOnly fg.deobf("curse.maven:fancymenu-forge-367706:4271128")
     runtimeOnly fg.deobf("curse.maven:catalogue-459701:3873264")
     runtimeOnly fg.deobf("curse.maven:configured-457570:4011355")
 }

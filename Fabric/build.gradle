@@ -35,12 +35,12 @@ dependencies {
     // Config Dependencies
     implementation 'com.electronwill.night-config:core:3.6.6'
     implementation 'com.electronwill.night-config:toml:3.6.6'
-    modImplementation "curse.maven:forge-config-api-port-fabric-547434:3960064" //ForgeConfigAPIPort-v4.2.6
+    modImplementation "curse.maven:forge-config-api-port-fabric-547434:4143545" //ForgeConfigAPIPort-v4.2.9
 
     // Mods
-    modCompileOnly "curse.maven:konkrete-416797:4031710"
-    modCompileOnly "curse.maven:fancymenu-fabric-416796:4032644"
-    modImplementation "com.terraformersmc:modmenu:4.0.6"
+    modCompileOnly "curse.maven:konkrete-416797:4136416"
+    modCompileOnly "curse.maven:fancymenu-fabric-416796:4271112"
+    modImplementation "com.terraformersmc:modmenu:4.1.2"
 }
 
 loom {
