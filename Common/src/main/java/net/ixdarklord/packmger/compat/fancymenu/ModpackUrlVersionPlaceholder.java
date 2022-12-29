@@ -62,18 +62,19 @@ public class ModpackUrlVersionPlaceholder extends Placeholder {
         }
 
         String ID;
-        ID = cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID).toString();
-        ID = ID.substring(1, ID.length()-1);
-        if (!ID.equals(IDENTIFIER)) {
-            if (!ModpackCheckingUpdateButton.isManifestInvalid)
-                ModpackCheckingUpdateButton.setInvalidManifest(cachedValues);
-            return I18n.get("menu.packmger.invalid_manifest");
+        ID = (cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID) != null) ? cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID).toString() : null;
+        if (ID != null) {
+            ID = ID.substring(1, ID.length() - 1);
+            if (!ID.equals(IDENTIFIER)) {
+                if (!ModpackCheckingUpdateButton.isManifestInvalid)
+                    ModpackCheckingUpdateButton.setInvalidManifest(cachedValues);
+                return I18n.get("menu.packmger.invalid_manifest");
+            }
         }
 
-        if (cachedValues.get("version") != null) {
-            int result = 0;
-            String NEW_VERSION = cachedValues.get("version").toString().replaceAll("[()\\[\\]{}]", "");
-            result = VC.compare(CURRENT_VERSION, NEW_VERSION);
+        if (cachedValues.get(ConfigHandler.CLIENT.KeyData.VERSION.ID) != null) {
+            String NEW_VERSION = cachedValues.get(ConfigHandler.CLIENT.KeyData.VERSION.ID).toString().replaceAll("[()\\[\\]{}]", "");
+            int result = VC.compare(CURRENT_VERSION, NEW_VERSION);
             if (result < 0) {
                 if (WindowHandler.CACHED_NEW_VERSION == null) {
                     WindowHandler.CACHED_NEW_VERSION = NEW_VERSION;
@@ -86,8 +87,8 @@ public class ModpackUrlVersionPlaceholder extends Placeholder {
             }
         }
 
-        if (!isValuesUpdating(dps.originalString)) {
-            cacheValues(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID, dps.originalString, UPDATE_KEY, "modpack.identifier", "modpack.version");
+        if (!isValuesUpdating(dps.placeholder)) {
+            cacheValues(dps.placeholder, ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID, ConfigHandler.CLIENT.KeyData.VERSION.ID, UPDATE_KEY, "modpack.identifier", "modpack.version");
         }
 
         return I18n.get("menu.packmger.checking_for_update");
@@ -111,7 +112,7 @@ public class ModpackUrlVersionPlaceholder extends Placeholder {
         return true;
     }
 
-    private static void cacheValues(String identifier, String placeholder, String KEY, String identifierJsonPath, String versionJsonPath) {
+    private static void cacheValues(String placeholder, String identifier, String version, String KEY, String identifierJsonPath, String versionJsonPath) {
         try {
             if (!currentlyUpdatingPlaceholders.contains(placeholder)) {
                 currentlyUpdatingPlaceholders.add(placeholder);
@@ -119,7 +120,7 @@ public class ModpackUrlVersionPlaceholder extends Placeholder {
                     try {
                         if (WebUtils.isValidURL(KEY)) {
                             cachedValues.put(identifier, ManagerUtils.getManifestValue(KEY, identifierJsonPath));
-                            cachedValues.put(placeholder, ManagerUtils.getManifestValue(KEY, versionJsonPath));
+                            cachedValues.put(version, ManagerUtils.getManifestValue(KEY, versionJsonPath));
                         } else {
                             try {
                                 String MC_VERSION = SharedConstants.getCurrentVersion().getName();
@@ -129,7 +130,7 @@ public class ModpackUrlVersionPlaceholder extends Placeholder {
                                 List<String> VERSIONS = curseAPI.getProjectVersions(MC_VERSION, CURRENT_VERSION);
 
                                 cachedValues.put(identifier, Collections.singletonList(IDENTIFIER));
-                                cachedValues.put(placeholder, Collections.singletonList(VERSIONS.get(0)));
+                                cachedValues.put(version, Collections.singletonList(VERSIONS.get(0)));
                             } catch (NumberFormatException e) {
                                 invalidURL.add(KEY);
                             }
