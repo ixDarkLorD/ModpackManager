@@ -10,7 +10,8 @@ public class FancyMenuRegistry {
     public static void init() {
         try {
             ButtonActionRegistry.registerButtonAction(new ModpackCheckingUpdateButton());
-            VisibilityRequirementRegistry.registerRequirement(new ModpackVersionRequirement());
+            VisibilityRequirementRegistry.registerRequirement(new InternetRequirement());
+            VisibilityRequirementRegistry.registerRequirement(new ModpackUpdateRequirement());
             PlaceholderRegistry.registerPlaceholder(new ModpackTitlePlaceholder());
             PlaceholderRegistry.registerPlaceholder(new ModpackVersionPlaceholder());
             PlaceholderRegistry.registerPlaceholder(new ModpackUrlVersionPlaceholder());

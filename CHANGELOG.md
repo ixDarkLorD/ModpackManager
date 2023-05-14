@@ -1,6 +1,14 @@
 # Changelog
 This file is for listing all the changes to this project
 
+## v0.2.2 BETA | May 14, 2023
+### Added
+- Adding the new Requirement for FancyMenu `is Internet Available`
+
+### Changed
+- Updating FancyMenu placeholder from the old system to the new one.
+- Fixing the CFU Button offset in the fabric version
+
 ## v0.2.1a BETA | Dec 29, 2022
 - Changing the forge version update json URL
 

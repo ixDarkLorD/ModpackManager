@@ -1,9 +1,8 @@
 package net.ixdarklord.packmger.compat.fancymenu;
 
 import de.keksuccino.fancymenu.api.buttonaction.ButtonActionContainer;
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
+import net.ixdarklord.packmger.core.Constants;
 import net.minecraft.client.resources.language.I18n;
 
 import java.util.Map;

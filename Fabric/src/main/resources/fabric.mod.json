@@ -36,6 +36,6 @@
     "com_electronwill_night-config_toml": "*"
   },
   "suggests": {
-    "fancymenu": ">=2.13.0"
+    "fancymenu": ">=2.14.7"
   }
 }
