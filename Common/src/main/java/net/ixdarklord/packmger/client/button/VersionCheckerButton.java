@@ -176,14 +176,12 @@ public class VersionCheckerButton extends ButtonBase {
     }
     private boolean isInternetAvailable() {
         AtomicBoolean isInternetReachable = new AtomicBoolean(false);
-        new Thread(() -> {
-            try {
-                InetAddress address = InetAddress.getByName("www.google.com");
-                isInternetReachable.set(address.isReachable(5000)); // Timeout in milliseconds
-            } catch (IOException ignored) {
-                Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
-            }
-        }).start();
+        try {
+            InetAddress address = InetAddress.getByName("www.google.com");
+            isInternetReachable.set(address.isReachable(5000)); // Timeout in milliseconds
+        } catch (IOException ignored) {
+            Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
+        }
         return isInternetReachable.get();
     }
     private boolean isValuesUpdating(String placeholder) {
