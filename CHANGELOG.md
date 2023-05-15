@@ -1,7 +1,7 @@
 # Changelog
 This file is for listing all the changes to this project
 
-## v0.1.1 BETA | May 14, 2023
+## v0.1.1 BETA | May 16, 2023
 ### Added
 - Adding the new Requirement for FancyMenu `is Internet Available`
 
