@@ -1,12 +1,11 @@
 package net.ixdarklord.packmger.compat.fancymenu;
 
-import de.keksuccino.fancymenu.api.visibilityrequirements.VisibilityRequirement;
-import de.keksuccino.konkrete.input.CharacterFilter;
-import net.ixdarklord.packmger.core.Constants;
+import de.keksuccino.fancymenu.menu.fancy.helper.ui.texteditor.TextEditorFormattingRule;
+import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirement;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.CurseAPI;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.util.ManagerUtils;
 import net.ixdarklord.packmger.util.VersionUtils;
 import net.ixdarklord.packmger.util.WebUtils;
@@ -17,7 +16,7 @@ import java.util.*;
 
 import static net.ixdarklord.packmger.compat.fancymenu.ModpackCheckingUpdateButton.isUpdateAvailable;
 
-public class ModpackVersionRequirement extends VisibilityRequirement {
+public class ModpackVersionRequirement extends LoadingRequirement {
 
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
     private static final String CURRENT_VERSION = ConfigHandler.CLIENT.MODPACK_VERSION.get();
@@ -139,6 +138,11 @@ public class ModpackVersionRequirement extends VisibilityRequirement {
     }
 
     @Override
+    public @Nullable String getCategory() {
+        return null;
+    }
+
+    @Override
     public boolean hasValue() {
         return false;
     }
@@ -154,7 +158,7 @@ public class ModpackVersionRequirement extends VisibilityRequirement {
     }
 
     @Override
-    public CharacterFilter getValueInputFieldFilter() {
+    public @Nullable List<TextEditorFormattingRule> getValueFormattingRules() {
         return null;
     }
 }

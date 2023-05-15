@@ -18,7 +18,11 @@ public class ConfigHandler {
         Services.PLATFORM.registerConfig();
         ItemBlacklist.registerConfig(String.format("config/%s/item_blacklist.json", Constants.MOD_ID));
     }
+    private static boolean isGameShutting = false;
     public static void saveData() {
+        if (isGameShutting) return;
+        isGameShutting = true;
+
         CLIENT.DURABILITY_DISPLAY_SIZE.set(ItemDurability.CACHED_VALUE);
         Constants.LOGGER.info("[{}] Saving values in Config!", Constants.MOD_NAME);
     }

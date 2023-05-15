@@ -1,14 +1,13 @@
 package net.ixdarklord.packmger.compat.fancymenu;
 
 import de.keksuccino.fancymenu.api.buttonaction.ButtonActionContainer;
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
+import net.ixdarklord.packmger.core.Constants;
 import net.minecraft.client.resources.language.I18n;
 
 import java.util.Map;
 
-public class ModpackCheckingUpdateButton extends ButtonActionContainer{
+public class ModpackCheckingUpdateButton extends ButtonActionContainer {
     private static final String BUTTON_ID = "modpack_manager_update_button";
     private static final String BUTTON_DESC = "CFU Button (Check for updates!)";
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
