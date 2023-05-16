@@ -22,8 +22,8 @@ dependencies {
     compileOnly "curse.maven:forge-config-api-port-fabric-547434:4143545" //ForgeConfigAPIPort-v4.2.9
 
     // Other Stuff
-    modCompileOnly "curse.maven:konkrete-410295:4136431"
-    modCompileOnly "curse.maven:fancymenu-forge-367706:4271128"
+    modCompileOnly "curse.maven:konkrete-410295:4514911"
+    modCompileOnly "curse.maven:fancymenu-forge-367706:4503133"
 }
 
 loom {

@@ -1,15 +1,16 @@
 package net.ixdarklord.packmger.compat.fancymenu;
 
-import de.keksuccino.fancymenu.api.visibilityrequirements.VisibilityRequirement;
-import de.keksuccino.konkrete.input.CharacterFilter;
+import de.keksuccino.fancymenu.menu.fancy.helper.ui.texteditor.TextEditorFormattingRule;
+import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirement;
 import net.ixdarklord.packmger.core.Constants;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 
-public class InternetRequirement extends VisibilityRequirement {
+public class InternetRequirement extends LoadingRequirement {
     private static final String REQUIREMENT_NAME = "Is Internet Connection Available";
     private static final String[] REQUIREMENT_DESC = new String[] {
             "This requirement will behave depending on internet connectivity!",
@@ -35,13 +36,18 @@ public class InternetRequirement extends VisibilityRequirement {
     }
 
     @Override
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return REQUIREMENT_NAME;
     }
 
     @Override
     public List<String> getDescription() {
         return List.of(REQUIREMENT_DESC);
+    }
+
+    @Override
+    public @Nullable String getCategory() {
+        return null;
     }
 
     @Override
@@ -60,7 +66,7 @@ public class InternetRequirement extends VisibilityRequirement {
     }
 
     @Override
-    public CharacterFilter getValueInputFieldFilter() {
+    public @Nullable List<TextEditorFormattingRule> getValueFormattingRules() {
         return null;
     }
 }

@@ -1,8 +1,7 @@
 package net.ixdarklord.packmger.compat.fancymenu;
 
-import de.keksuccino.fancymenu.api.visibilityrequirements.VisibilityRequirement;
-import de.keksuccino.konkrete.input.CharacterFilter;
-import net.ixdarklord.packmger.core.Constants;
+import de.keksuccino.fancymenu.menu.fancy.helper.ui.texteditor.TextEditorFormattingRule;
+import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirement;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.CurseAPI;
 import net.ixdarklord.packmger.config.ConfigHandler;
@@ -10,13 +9,14 @@ import net.ixdarklord.packmger.util.ManagerUtils;
 import net.ixdarklord.packmger.util.VersionUtils;
 import net.ixdarklord.packmger.util.WebUtils;
 import net.minecraft.SharedConstants;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 import static net.ixdarklord.packmger.compat.fancymenu.ModpackCheckingUpdateButton.isUpdateAvailable;
 
-public class ModpackUpdateRequirement extends VisibilityRequirement {
+public class ModpackUpdateRequirement extends LoadingRequirement {
 
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
     private static final String CURRENT_VERSION = ConfigHandler.CLIENT.MODPACK_VERSION.get();
@@ -26,25 +26,13 @@ public class ModpackUpdateRequirement extends VisibilityRequirement {
             "This requirement will behave depending on new update availability!",
             "If there is an update, it will sit to true. Otherwise, it will sit to false."
     };
-    private static Map<String, List<String>> cachedValues = new HashMap<>();
-    private static List<String> invalidURL = new ArrayList<>();
-    private static List<String> currentlyUpdatingPlaceholders = new ArrayList<>();
+    private static final Map<String, List<String>> cachedValues = new HashMap<>();
+    private static final List<String> invalidURL = new ArrayList<>();
+    private static final List<String> currentlyUpdatingPlaceholders = new ArrayList<>();
     VersionUtils VC = new VersionUtils();
 
     public ModpackUpdateRequirement() {
         super("modpack_update_requirement");
-    }
-
-    public static void reloadMenu(boolean isDebugMode) {
-        try {
-            WindowHandler.CACHED_NEW_VERSION = null;
-            isUpdateAvailable = false;
-            cachedValues.clear();
-            invalidURL.clear();
-            if (isDebugMode) Constants.LOGGER.info("ModpackUpdateRequirement cache successfully cleared!");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     @Override
@@ -128,13 +116,18 @@ public class ModpackUpdateRequirement extends VisibilityRequirement {
     }
 
     @Override
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return REQUIREMENT_NAME;
     }
 
     @Override
     public List<String> getDescription() {
         return List.of(REQUIREMENT_DESC);
+    }
+
+    @Override
+    public @Nullable String getCategory() {
+        return null;
     }
 
     @Override
@@ -153,7 +146,7 @@ public class ModpackUpdateRequirement extends VisibilityRequirement {
     }
 
     @Override
-    public CharacterFilter getValueInputFieldFilter() {
+    public @Nullable List<TextEditorFormattingRule> getValueFormattingRules() {
         return null;
     }
 }
