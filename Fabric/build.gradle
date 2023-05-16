@@ -38,8 +38,8 @@ dependencies {
     modImplementation "curse.maven:forge-config-api-port-fabric-547434:4256149" //ForgeConfigAPIPort-v5.0.3
 
     // Mods
-    modCompileOnly "curse.maven:konkrete-416797:4223884"
-    modCompileOnly "curse.maven:fancymenu-fabric-416796:4271114"
+    modCompileOnly "curse.maven:konkrete-416797:4514887"
+    modCompileOnly "curse.maven:fancymenu-fabric-416796:4503119"
     modImplementation "com.terraformersmc:modmenu:5.0.2"
 }
 
