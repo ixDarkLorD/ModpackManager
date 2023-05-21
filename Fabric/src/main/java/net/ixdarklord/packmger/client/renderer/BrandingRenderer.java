@@ -18,13 +18,14 @@ public class BrandingRenderer {
     private static List<String> brandings = new ArrayList<>();
     private static void compute() {
         if (brandings.isEmpty()) {
-            var loader = FabricLoader.getInstance();
-            String loaderVersion = "";
-            if (loader.getModContainer("fabricloader").isPresent())
-                loaderVersion = loader.getModContainer("fabricloader").get().getMetadata().getVersion().getFriendlyString();
-
             List<String> brd = new ArrayList<>();
-            brd.add("Fabric " + loaderVersion);
+            var loader = FabricLoader.getInstance();
+
+            if (loader.getModContainer("quilt_loader").isPresent()) {
+                brd.add("Quilt " + loader.getModContainer("quilt_loader").get().getMetadata().getVersion().getFriendlyString());
+            } else if (loader.getModContainer("fabricloader").isPresent())
+                brd.add("Fabric " + loader.getModContainer("fabricloader").get().getMetadata().getVersion().getFriendlyString());
+
             brd.add("Minecraft " + SharedConstants.getCurrentVersion().getName() + (Minecraft.getInstance().isDemo() ? " | Demo" : ""));
             if (!ConfigHandler.CLIENT.getTitleName().equalsIgnoreCase("Minecraft")) {
                 brd.add(String.format("%s %s", ConfigHandler.CLIENT.getTitleName(), ConfigHandler.CLIENT.MODPACK_VERSION.get()));

@@ -27,7 +27,7 @@ public class ModpackCheckingUpdateButton extends ButtonActionContainer{
             isFirstTimePressed = false;
             isManifestInvalid = false;
             isConnectionFailed = false;
-            ModpackVersionRequirement.reloadMenu(false);
+            ModpackUpdateRequirement.reloadMenu(false);
             ModpackUrlVersionPlaceholder.reloadMenu(false);
         }
     }
