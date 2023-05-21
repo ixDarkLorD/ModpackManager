@@ -5,6 +5,7 @@ import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirement;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.CurseAPI;
 import net.ixdarklord.packmger.config.ConfigHandler;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.util.ManagerUtils;
 import net.ixdarklord.packmger.util.VersionUtils;
 import net.ixdarklord.packmger.util.WebUtils;
@@ -35,6 +36,17 @@ public class ModpackUpdateRequirement extends LoadingRequirement {
         super("modpack_update_requirement");
     }
 
+    public static void reloadMenu(boolean isDebugMode) {
+        try {
+            WindowHandler.CACHED_NEW_VERSION = null;
+            isUpdateAvailable = false;
+            cachedValues.clear();
+            invalidURL.clear();
+            if (isDebugMode) Constants.LOGGER.info("ModpackVersionRequirement cache successfully cleared!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     @Override
     public boolean isRequirementMet(@Nullable String value) {
         if (!ModpackCheckingUpdateButton.isFirstTimePressed) {
