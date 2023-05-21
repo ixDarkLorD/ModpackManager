@@ -14,7 +14,9 @@ public abstract class MixinMinecraft {
 
     @Inject(at = @At(value = "HEAD"), method = "createTitle", cancellable = true)
     private void onGetWindowTitle(CallbackInfoReturnable<String> info) {
-        info.setReturnValue(WindowHandler.modifyTitle());
+        if (ConfigHandler.CLIENT.WINDOW_TITLE_CHANGER.get()) {
+            info.setReturnValue(WindowHandler.modifyTitle());
+        }
     }
 
     @Inject(at = @At(value = "HEAD"), method = "stop")

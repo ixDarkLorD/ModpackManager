@@ -11,7 +11,7 @@ pluginManagement {
         }
         maven {
             name = 'Quilt (Release)'
-            url = 'https://maven.quiltmc.org/repository/release'
+            url = 'https://maven.quiltmc.org/repository/release/'
         }
     }
 }

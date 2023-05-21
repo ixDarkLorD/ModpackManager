@@ -46,6 +46,7 @@ public abstract class MixinTitleScreen extends Screen {
 
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void addCFUButton(CallbackInfo ci) {
+        if (Minecraft.getInstance().screen == null) return;
         if (!Services.BUTTON.ifPresent(VersionCheckerButton.screenEvent, VersionCheckerButton.modButton)) {
             this.addRenderableWidget(VersionCheckerButton.modButton);
         }

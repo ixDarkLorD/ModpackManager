@@ -35,7 +35,7 @@ dependencies {
     // Config Dependencies
     implementation 'com.electronwill.night-config:core:3.6.6'
     implementation 'com.electronwill.night-config:toml:3.6.6'
-    modImplementation "curse.maven:forge-config-api-port-fabric-547434:4143545" //ForgeConfigAPIPort-v4.2.9
+    modImplementation "curse.maven:forge-config-api-port-fabric-547434:4322560" //ForgeConfigAPIPort-v4.2.10
 
     // Mods
     modCompileOnly "curse.maven:konkrete-416797:4136416"

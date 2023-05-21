@@ -30,6 +30,7 @@ public class VersionCheckerButton extends ButtonBase {
 
     private static String buttonMessage;
     private static boolean isUpdateAvailable;
+    private static boolean isInternetReachable;
     private static boolean isProcessed;
     private static boolean isActivated;
     private final VersionUtils VC = new VersionUtils();
@@ -85,6 +86,17 @@ public class VersionCheckerButton extends ButtonBase {
                 cacheValues(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID, "version", UPDATE_KEY, "modpack.identifier", "modpack.version");
             }
         }
+    }
+    private boolean isInternetAvailable() {
+        new Thread(() -> {
+            try {
+                InetAddress address = InetAddress.getByName("www.google.com");
+                isInternetReachable = address.isReachable(5000); // Timeout in milliseconds
+            } catch (IOException ignored) {
+                Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
+            }
+        }).start();
+        return isInternetReachable;
     }
     @Override
     protected void updateButton() {
@@ -173,16 +185,6 @@ public class VersionCheckerButton extends ButtonBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    private boolean isInternetAvailable() {
-        AtomicBoolean isInternetReachable = new AtomicBoolean(false);
-        try {
-            InetAddress address = InetAddress.getByName("www.google.com");
-            isInternetReachable.set(address.isReachable(5000)); // Timeout in milliseconds
-        } catch (IOException ignored) {
-            Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
-        }
-        return isInternetReachable.get();
     }
     private boolean isValuesUpdating(String placeholder) {
         try {

@@ -19,7 +19,7 @@ dependencies {
     compileOnly 'org.spongepowered:mixin:0.8.5'
 
     // Config Dependencies
-    compileOnly "curse.maven:forge-config-api-port-fabric-547434:4143545" //ForgeConfigAPIPort-v4.2.9
+    modCompileOnly "curse.maven:forge-config-api-port-fabric-547434:4322560" //ForgeConfigAPIPort-v4.2.10
 
     // Other Stuff
     modCompileOnly "curse.maven:konkrete-410295:4514911"

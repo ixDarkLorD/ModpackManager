@@ -67,8 +67,10 @@ public class WindowHandler {
                     FancyMenuRegistry.modifyTitle(cleanedTitle);
                 }
 
-                updateGameState(holder);
-                updateUpdateHolder();
+                if (!ConfigHandler.CLIENT.SAFE_WINDOW_TITLE.get()) {
+                    updateGameState(holder);
+                    updateUpdateHolder();
+                }
             }
             return TITLE;
         }
