@@ -3,7 +3,6 @@ package net.ixdarklord.packmger.client.button;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.CurseAPI;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
 import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 import net.ixdarklord.packmger.util.ManagerUtils;
@@ -15,9 +14,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VersionCheckerButton extends ButtonBase {
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
@@ -30,6 +31,7 @@ public class VersionCheckerButton extends ButtonBase {
 
     private static String buttonMessage;
     private static boolean isUpdateAvailable;
+    private static boolean isInternetReachable;
     private static boolean isProcessed;
     private static boolean isActivated;
     private final VersionUtils VC = new VersionUtils();
@@ -43,9 +45,7 @@ public class VersionCheckerButton extends ButtonBase {
     @Override
     protected void initializeButton(Object event) {
         this.moveButtonsLayout(Services.BUTTON.buttonsList(event), Services.BUTTON.screenHeight(event) / 4 + 48 + 72 + 12 );
-        int i = 0;
-        if (Services.PLATFORM.getPlatformName().equals("Forge")) i = 24;
-        if (Services.PLATFORM.getPlatformName().equals("Fabric")) i = 12;
+        int i = 24;
         modButton = new Button(
                 Services.BUTTON.screenWidth(event) / 2 - 100, Services.BUTTON.screenHeight(event) / 4 + 48 + 24 * 4 - i,
                 200, 20,
@@ -56,7 +56,10 @@ public class VersionCheckerButton extends ButtonBase {
                     buttonFunction();
                 }
         );
-        if (IS_FIRST_TIME_PRESSED) {
+        if (!isInternetAvailable()) {
+            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
+            modButton.setMessage(new TextComponent(buttonMessage));
+        } else if (IS_FIRST_TIME_PRESSED) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.press_to_check");
             modButton.setMessage(new TextComponent(buttonMessage));
         } else {
@@ -64,12 +67,18 @@ public class VersionCheckerButton extends ButtonBase {
                 buttonFunction();
             } else {
                 updateButton();
+                adjustAlignment();
             }
         }
         Services.BUTTON.registerButton(event, modButton);
     }
 
     protected void buttonFunction() {
+        if (!isInternetAvailable()) {
+            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
+            modButton.setMessage(new TextComponent(buttonMessage));
+            return;
+        }
         if (!isUpdateAvailable) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.checking_for_update");
             modButton.setMessage(new TextComponent(buttonMessage));
@@ -79,40 +88,51 @@ public class VersionCheckerButton extends ButtonBase {
             }
         }
     }
+    private boolean isInternetAvailable() {
+        new Thread(() -> {
+            try {
+                InetAddress address = InetAddress.getByName("www.google.com");
+                isInternetReachable = address.isReachable(5000); // Timeout in milliseconds
+            } catch (IOException ignored) {
+                Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
+            }
+        }).start();
+        return isInternetReachable;
+    }
     @Override
     protected void updateButton() {
-        if (!isURLInvalid(UPDATE_KEY)) {
-            List<String> version = cachedValues.get("version");
-            if (version != null) {
-                String ID = cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID).toString();
-                ID = ID.substring(1, ID.length()-1);
-                if (ID.equals(IDENTIFIER)) {
-                    String NEW_VERSION = cachedValues.get("version").toString().replaceAll("[()\\[\\]{}]", "");
-                    int result = VC.compare(CURRENT_VERSION, NEW_VERSION);
-                    if (result < 0) {
-                        if (WindowHandler.CACHED_NEW_VERSION == null) {
-                            WindowHandler.CACHED_NEW_VERSION = NEW_VERSION;
-                            WindowHandler.updateUpdateHolder();
-                        }
-                        buttonMessage = "\u00A76" + I18n.get("menu.packmger.update_available", NEW_VERSION);
-                        modButton.setMessage(new TextComponent(buttonMessage));
-                        isUpdateAvailable = true;
-                    } else {
-                        buttonMessage = "\u00A7f" + I18n.get("menu.packmger.no_updates");
-                        modButton.setMessage(new TextComponent(buttonMessage));
-                    }
-                } else {
-                    buttonMessage = "\u00A7c" + I18n.get("menu.packmger.invalid_manifest");
-                    modButton.setMessage(new TextComponent(buttonMessage));
-                    logInvalidManifest();
-                }
-            }
-        } else {
+        if (isURLInvalid(UPDATE_KEY)) {
             buttonMessage = "\u00A7c" + I18n.get("menu.packmger.connection_failed");
             modButton.setMessage(new TextComponent(buttonMessage));
             logConnectionFailed();
+            return;
         }
-        adjustAlignment();
+
+        String ID = cachedValues.get(ConfigHandler.CLIENT.KeyData.IDENTIFIER.ID).toString();
+        ID = ID.substring(1, ID.length()-1);
+        if (!ID.equals(IDENTIFIER)) {
+            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.invalid_manifest");
+            modButton.setMessage(new TextComponent(buttonMessage));
+            logInvalidManifest();
+            return;
+        }
+
+        if (cachedValues.get("version") != null) {
+            String NEW_VERSION = cachedValues.get("version").toString().replaceAll("[()\\[\\]{}]", "");
+            int result = VC.compare(CURRENT_VERSION, NEW_VERSION);
+            if (result < 0) {
+                if (WindowHandler.CACHED_NEW_VERSION == null) {
+                    WindowHandler.CACHED_NEW_VERSION = NEW_VERSION;
+                    WindowHandler.updateUpdateHolder();
+                }
+                buttonMessage = "\u00A76" + I18n.get("menu.packmger.update_available", NEW_VERSION);
+                modButton.setMessage(new TextComponent(buttonMessage));
+                isUpdateAvailable = true;
+            } else {
+                buttonMessage = "\u00A7f" + I18n.get("menu.packmger.no_updates");
+                modButton.setMessage(new TextComponent(buttonMessage));
+            }
+        }
     }
 
     private void adjustAlignment() {

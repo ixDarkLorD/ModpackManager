@@ -1,7 +1,7 @@
 package net.ixdarklord.packmger.config;
 
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.client.renderer.ItemDurability;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -18,7 +18,12 @@ public class ConfigHandler {
         Services.PLATFORM.registerConfig();
         ItemBlacklist.registerConfig(String.format("config/%s/item_blacklist.json", Constants.MOD_ID));
     }
+
+    private static boolean isGameShutting = false;
     public static void saveData() {
+        if (isGameShutting) return;
+        isGameShutting = true;
+
         CLIENT.DURABILITY_DISPLAY_SIZE.set(ItemDurability.CACHED_VALUE);
         Constants.LOGGER.info("[{}] Saving values in Config!", Constants.MOD_NAME);
     }
@@ -32,6 +37,8 @@ public class ConfigHandler {
         public static final ForgeConfigSpec.ConfigValue<String> MODPACK_UPDATE_IDENTIFIER;
         public static final ForgeConfigSpec.ConfigValue<String> MODPACK_UPDATE_KEY;
 
+        public static final ForgeConfigSpec.BooleanValue WINDOW_TITLE_CHANGER;
+        public static final ForgeConfigSpec.BooleanValue SAFE_WINDOW_TITLE;
         public static final ForgeConfigSpec.BooleanValue DURABILITY_DISPLAY_VISIBILITY;
         public static final ForgeConfigSpec.DoubleValue DURABILITY_DISPLAY_SIZE;
 
@@ -65,7 +72,20 @@ public class ConfigHandler {
             MODPACK_UPDATE_KEY = BUILDER.define(KeyData.PROJECT_ID_OR_URL.ID, "https://pastebin.com/raw/XzCsX7u8");
             BUILDER.pop();
 
-            BUILDER.push("Visuals");
+            BUILDER.push("Features");
+            WINDOW_TITLE_CHANGER = BUILDER
+                    .comment("Set it to false, To disable the Window Title Changer")
+                    .define(KeyData.WINDOW_TITLE_CHANGER.ID, true);
+            SAFE_WINDOW_TITLE = BUILDER
+                    .comment(
+                            "If the Modpack has Sodium/Rubidium mod installed, Set it to true!",
+                            "To prevent crashing from happening by disabling the gamestate syntax",
+                            "Because sometimes Nvidia users will have some troubles",
+                            "This option will be needless if the Window Title Changer feature is disabled!")
+                    .define(KeyData.SAFE_WINDOW_TITLE.ID, false);
+            IS_FIRST_TIME_PRESSED = BUILDER
+                    .comment("CFU Button(Checking for Updates) Behavior")
+                    .define(KeyData.IS_FIRST_TIME_PRESSED.ID, true );
             DURABILITY_DISPLAY_VISIBILITY = BUILDER
                     .comment("Durability Display Visibility and Size")
                     .define(KeyData.DURABILITY_DISPLAY_VISIBILITY.ID, true);
@@ -90,10 +110,6 @@ public class ConfigHandler {
                     .comment("Startup Loading Visibility and Text")
                     .define(KeyData.LOADING_SCREEN_GAMESTATE_VISIBILITY.ID, true );
             LOADING_STATE_TEXT = BUILDER.define(KeyData.LOADING_SCREEN_TEXT.ID, "Loading the game...");
-
-            IS_FIRST_TIME_PRESSED = BUILDER
-                    .comment("CFU Button(Checking for Updates) Behavior")
-                    .define(KeyData.IS_FIRST_TIME_PRESSED.ID, true );
             BUILDER.pop();
             SPEC = BUILDER.build();
         }
@@ -121,6 +137,8 @@ public class ConfigHandler {
             PROJECT_ID_OR_URL("project_id_or_url"),
             DURABILITY_DISPLAY_VISIBILITY("durability_display_visibility"),
             DURABILITY_DISPLAY_SIZE("durability_display_size"),
+            WINDOW_TITLE_CHANGER("window_title_changer"),
+            SAFE_WINDOW_TITLE("safe_title_changer"),
             STARTUP_TITLE_VISIBILITY("startup_title_visibility"),
             STARTUP_TITLE_TEXT("startup_title_text"),
             LOADING_SCREEN_GAMESTATE_VISIBILITY("loading_screen_gamestate_visibility"),

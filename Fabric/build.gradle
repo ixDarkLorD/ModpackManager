@@ -6,6 +6,8 @@ plugins {
 }
 
 java.withSourcesJar()
+java.withJavadocJar()
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
 archivesBaseName = "${modid}-fabric"
 
@@ -27,17 +29,18 @@ dependencies {
     // Loader
     modImplementation "net.fabricmc:fabric-loader:${fabric_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${mc_version}"
-
-    // Lib
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
-    implementation 'com.electronwill.night-config:core:3.6.5'
-    implementation 'com.electronwill.night-config:toml:3.6.5'
+
+    // Config Dependencies
+    implementation 'com.electronwill.night-config:core:3.6.6'
+    implementation 'com.electronwill.night-config:toml:3.6.6'
+    modImplementation "curse.maven:forge-config-api-port-fabric-547434:3943250" //ForgeConfigAPIPort-v3.2.4
 
     // Mods
-    modCompileOnly "curse.maven:konkrete-416797:4031705"
-    modCompileOnly "curse.maven:fancymenu-fabric-416796:4032642"
-    modImplementation "curse.maven:forge-config-api-port-fabric-547434:3943250" //ForgeConfigAPIPort-v3.2.4
-    modCompileOnly "com.terraformersmc:modmenu:3.2.3"
+    modCompileOnly "curse.maven:konkrete-416797:4514880"
+    modCompileOnly "curse.maven:fancymenu-fabric-416796:4503114"
+    modImplementation "com.terraformersmc:modmenu:3.2.5"
 }
 
 loom {

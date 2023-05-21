@@ -1,5 +1,6 @@
 package net.ixdarklord.packmger.event;
 
+import net.ixdarklord.packmger.client.handler.KeyHandler;
 import net.ixdarklord.packmger.client.handler.ScreenHandler;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.ModCompatibility;

@@ -1,8 +1,8 @@
 package net.ixdarklord.packmger.helper;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.config.ConfigHandler;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.services.IPlatformHelper;
 import net.minecraftforge.api.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;

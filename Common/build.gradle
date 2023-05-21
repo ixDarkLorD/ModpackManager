@@ -13,17 +13,17 @@ dependencies {
     }
 
     // Mixin Dependencies
-    compileOnly 'org.ow2.asm:asm-tree:9.2'
-    compileOnly 'org.ow2.asm:asm-commons:9.2'
-    compileOnly 'org.ow2.asm:asm-util:9.2'
+    compileOnly 'org.ow2.asm:asm-tree:9.4'
+    compileOnly 'org.ow2.asm:asm-commons:9.4'
+    compileOnly 'org.ow2.asm:asm-util:9.4'
     compileOnly 'org.spongepowered:mixin:0.8.5'
 
     // Config Dependencies
-    compileOnly "curse.maven:forge-config-api-port-fabric-547434:3943250" //ForgeConfigAPIPort-v3.2.4
+    modCompileOnly "curse.maven:forge-config-api-port-fabric-547434:3943250" //ForgeConfigAPIPort-v3.2.4
 
     // Other Stuff
-    compileOnly "curse.maven:konkrete-410295:4031719"
-    compileOnly "curse.maven:fancymenu-forge-367706:4032650"
+    modCompileOnly "curse.maven:konkrete-410295:4514911"
+    modCompileOnly "curse.maven:fancymenu-forge-367706:4503133"
 }
 
 loom {

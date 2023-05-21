@@ -2,7 +2,6 @@ package net.ixdarklord.packmger.mixin.client;
 
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.helper.Services;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +14,9 @@ public abstract class MixinMinecraft {
 
     @Inject(at = @At(value = "HEAD"), method = "createTitle", cancellable = true)
     private void onGetWindowTitle(CallbackInfoReturnable<String> info) {
-        info.setReturnValue(WindowHandler.modifyTitle());
+        if (ConfigHandler.CLIENT.WINDOW_TITLE_CHANGER.get()) {
+            info.setReturnValue(WindowHandler.modifyTitle());
+        }
     }
 
     @Inject(at = @At(value = "HEAD"), method = "stop")

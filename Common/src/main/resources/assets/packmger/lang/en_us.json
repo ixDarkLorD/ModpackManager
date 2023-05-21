@@ -3,6 +3,7 @@
   "menu.packmger.compat.loading_mods": "%s Mods loaded",
   "menu.packmger.compat.loading_mods.include_lib": "(%s Mods | %s Library) loaded",
 
+  "menu.packmger.no_internet": "Check your network connection!",
   "menu.packmger.press_to_check": "Press to check for updates!",
   "menu.packmger.checking_for_update": "Checking for updates...",
   "menu.packmger.no_updates": "No Updates Available!",

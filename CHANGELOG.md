@@ -1,6 +1,18 @@
 # Changelog
 This file is for listing all the changes to this project
 
+## v0.2.3 BETA | May 21, 2022
+### Added
+- Adding the new Requirement for FancyMenu `is Internet Available`
+- Adding toggle option for the Window Title Changer in the config
+- Adding a safe option for the Window Title Changer to prevent crashes related to Sodium/Rubidium mod
+
+### Changed
+- Updating FancyMenu compat to the new system
+
+### Fixed
+- Fixing wrong information issue in the Title Screen `Fabric Version`
+
 ## v0.2.1a BETA | Dec 29, 2022
 - Changing the forge version update json URL
 

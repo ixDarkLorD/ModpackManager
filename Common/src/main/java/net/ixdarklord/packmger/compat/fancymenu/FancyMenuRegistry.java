@@ -1,18 +1,20 @@
 package net.ixdarklord.packmger.compat.fancymenu;
 
+
 import de.keksuccino.fancymenu.FancyMenu;
 import de.keksuccino.fancymenu.api.buttonaction.ButtonActionRegistry;
-import de.keksuccino.fancymenu.api.placeholder.PlaceholderTextRegistry;
-import de.keksuccino.fancymenu.api.visibilityrequirements.VisibilityRequirementRegistry;
+import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirementRegistry;
+import de.keksuccino.fancymenu.menu.placeholder.v2.PlaceholderRegistry;
 
 public class FancyMenuRegistry {
     public static void init() {
         try {
             ButtonActionRegistry.registerButtonAction(new ModpackCheckingUpdateButton());
-            VisibilityRequirementRegistry.registerRequirement(new ModpackVersionRequirement());
-            PlaceholderTextRegistry.registerPlaceholder(new ModpackTitlePlaceholder());
-            PlaceholderTextRegistry.registerPlaceholder(new ModpackVersionPlaceholder());
-            PlaceholderTextRegistry.registerPlaceholder(new ModpackUrlVersionPlaceholder());
+            LoadingRequirementRegistry.registerRequirement(new InternetRequirement());
+            LoadingRequirementRegistry.registerRequirement(new ModpackUpdateRequirement());
+            PlaceholderRegistry.registerPlaceholder(new ModpackTitlePlaceholder());
+            PlaceholderRegistry.registerPlaceholder(new ModpackVersionPlaceholder());
+            PlaceholderRegistry.registerPlaceholder(new ModpackUrlVersionPlaceholder());
         } catch (Exception e) {
             e.printStackTrace();
         }

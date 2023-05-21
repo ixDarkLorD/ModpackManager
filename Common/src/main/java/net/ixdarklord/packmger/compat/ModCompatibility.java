@@ -1,7 +1,7 @@
 package net.ixdarklord.packmger.compat;
 
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.compat.fancymenu.FancyMenuRegistry;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 
 public class ModCompatibility {

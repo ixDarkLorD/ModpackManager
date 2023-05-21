@@ -2,8 +2,6 @@ package net.ixdarklord.packmger.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.ixdarklord.packmger.client.renderer.ItemDurability;
-import net.ixdarklord.packmger.helper.Services;
-import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

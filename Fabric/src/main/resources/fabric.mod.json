@@ -31,8 +31,12 @@
     "minecraft": ">=${minMinecraftVersion} <${nextMinecraftVersion}",
     "fabricloader": ">=${minFabricVersion}",
     "fabric-api": ">=${minFabricApiVersion}",
-    "forgeconfigapiport": ">=4.2.6",
+    "forgeconfigapiport": ">=3.2.4",
     "com_electronwill_night-config_core": "*",
     "com_electronwill_night-config_toml": "*"
+  },
+  "suggests": {
+    "fancymenu": ">=2.14.7",
+    "modmenu": ">=3.2.5"
   }
 }

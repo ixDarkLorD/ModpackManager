@@ -1,12 +1,12 @@
 package net.ixdarklord.packmger.client.handler;
 
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.compat.fancymenu.FancyMenuRegistry;
 import net.ixdarklord.packmger.config.ConfigHandler;
 import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.GamestateType;
 import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
 import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.SyntaxData;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -38,17 +38,17 @@ public class WindowHandler {
     private static final List<String> CONFIG_SYNTAX = new ArrayList<>();
 
     public static String modifyTitle() {
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.TITLE.ID + " = ");
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.VERSION.ID + " = ");
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.STARTUP_TITLE_VISIBILITY.ID + " = ");
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.STARTUP_TITLE_TEXT.ID + " = ");
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.GAMESTATE_VISIBILITY.ID + " = ");
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.LOADING_SCREEN_GAMESTATE_VISIBILITY.ID + " = ");
-        CONFIG_VALUES.add(ConfigHandler.CLIENT.KeyData.LOADING_SCREEN_TEXT.ID + " = ");
+        CONFIG_VALUES.add(KeyData.TITLE.ID + " = ");
+        CONFIG_VALUES.add(KeyData.VERSION.ID + " = ");
+        CONFIG_VALUES.add(KeyData.STARTUP_TITLE_VISIBILITY.ID + " = ");
+        CONFIG_VALUES.add(KeyData.STARTUP_TITLE_TEXT.ID + " = ");
+        CONFIG_VALUES.add(KeyData.GAMESTATE_VISIBILITY.ID + " = ");
+        CONFIG_VALUES.add(KeyData.LOADING_SCREEN_GAMESTATE_VISIBILITY.ID + " = ");
+        CONFIG_VALUES.add(KeyData.LOADING_SCREEN_TEXT.ID + " = ");
 
-        CONFIG_SYNTAX.add(ConfigHandler.CLIENT.SyntaxData.MC_VERSION.ID);
-        CONFIG_SYNTAX.add(ConfigHandler.CLIENT.SyntaxData.MODPACK_VERSION.ID);
-        CONFIG_SYNTAX.add(ConfigHandler.CLIENT.SyntaxData.GAMESTATE.ID);
+        CONFIG_SYNTAX.add(SyntaxData.MC_VERSION.ID);
+        CONFIG_SYNTAX.add(SyntaxData.MODPACK_VERSION.ID);
+        CONFIG_SYNTAX.add(SyntaxData.GAMESTATE.ID);
 
         if (CACHED_TITLE == null) {
             initializeTitle();
@@ -67,8 +67,10 @@ public class WindowHandler {
                     FancyMenuRegistry.modifyTitle(cleanedTitle);
                 }
 
-                updateGameState(holder);
-                updateUpdateHolder();
+                if (!ConfigHandler.CLIENT.SAFE_WINDOW_TITLE.get()) {
+                    updateGameState(holder);
+                    updateUpdateHolder();
+                }
             }
             return TITLE;
         }
@@ -114,7 +116,6 @@ public class WindowHandler {
                         data = data.replace(CONFIG_VALUES.get(2), "");
                         data = data.substring(1);
                         IS_STARTUP_TITLE_VISIBLE = Boolean.parseBoolean(data);
-                        LOGGER.debug(IS_STARTUP_TITLE_VISIBLE);
 
                     //STARTUP TITLE TEXT
                     } else if (data.contains(CONFIG_VALUES.get(3)) && data.indexOf(CONFIG_VALUES.get(3)) == 1 && data.indexOf("") == 0) {
@@ -126,16 +127,16 @@ public class WindowHandler {
                     } else if (data.contains(CONFIG_VALUES.get(4)) && data.indexOf(CONFIG_VALUES.get(4)) == 1 && data.indexOf("") == 0) {
                         data = data.replace(CONFIG_VALUES.get(4), "");
                         data = data.substring(1);
-                        if (data.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.ALL.name())) {
-                            GAMESTATE_TYPE = ConfigHandler.CLIENT.GamestateType.ALL.name();
-                        } else if (data.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.PLAYING_MODE_AND_EXTRA.name())) {
-                            GAMESTATE_TYPE = ConfigHandler.CLIENT.GamestateType.PLAYING_MODE_AND_EXTRA.name();
-                        } else if (data.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.PLAYING_MODE_AND_PAUSE_SCREEN.name())) {
-                            GAMESTATE_TYPE = ConfigHandler.CLIENT.GamestateType.PLAYING_MODE_AND_PAUSE_SCREEN.name();
-                        } else if (data.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.ONLY_PLAYING_MODE.name())) {
-                            GAMESTATE_TYPE = ConfigHandler.CLIENT.GamestateType.ONLY_PLAYING_MODE.name();
+                        if (data.equalsIgnoreCase(GamestateType.ALL.name())) {
+                            GAMESTATE_TYPE = GamestateType.ALL.name();
+                        } else if (data.equalsIgnoreCase(GamestateType.PLAYING_MODE_AND_EXTRA.name())) {
+                            GAMESTATE_TYPE = GamestateType.PLAYING_MODE_AND_EXTRA.name();
+                        } else if (data.equalsIgnoreCase(GamestateType.PLAYING_MODE_AND_PAUSE_SCREEN.name())) {
+                            GAMESTATE_TYPE = GamestateType.PLAYING_MODE_AND_PAUSE_SCREEN.name();
+                        } else if (data.equalsIgnoreCase(GamestateType.ONLY_PLAYING_MODE.name())) {
+                            GAMESTATE_TYPE = GamestateType.ONLY_PLAYING_MODE.name();
                         } else {
-                            GAMESTATE_TYPE = ConfigHandler.CLIENT.GamestateType.ALL.name();
+                            GAMESTATE_TYPE = GamestateType.ALL.name();
                         }
 
                     //LOADING SCREEN GAMESTATE VISIBILITY
@@ -163,7 +164,7 @@ public class WindowHandler {
         ClientPacketListener clientpacketlistener = Minecraft.getInstance().getConnection();
 
         // CHECK IF THE GAMESTATE TYPE EQUAL TO AN EXISTING VALUE
-        if (ConfigHandler.CLIENT.GamestateType.ifEqual(GAMESTATE_TYPE)) {
+        if (GamestateType.ifEqual(GAMESTATE_TYPE)) {
 
             // WHEN YOU JOIN or CONNECT TO THE WORLD
             if (clientpacketlistener != null && clientpacketlistener.getConnection().isConnected()) {
@@ -178,9 +179,9 @@ public class WindowHandler {
                 }
 
                 // THE PAUSE SCREEN
-                if (Minecraft.getInstance().screen != null && Minecraft.getInstance().screen.isPauseScreen() && !GAMESTATE_TYPE.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.ONLY_PLAYING_MODE.name())) {
+                if (Minecraft.getInstance().screen != null && Minecraft.getInstance().screen.isPauseScreen() && !GAMESTATE_TYPE.equalsIgnoreCase(GamestateType.ONLY_PLAYING_MODE.name())) {
                     pauseGS.append(TITLE);
-                    if (isPauseScreen() || isOpenLinkScreen() || GAMESTATE_TYPE.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.PLAYING_MODE_AND_PAUSE_SCREEN.name())) {
+                    if (isPauseScreen() || isOpenLinkScreen() || GAMESTATE_TYPE.equalsIgnoreCase(GamestateType.PLAYING_MODE_AND_PAUSE_SCREEN.name())) {
                         pauseGS.append(" ["+I18n.get("menu.paused")+"]");
                     } else if (isAdvancementScreen()){
                         pauseGS.append(" ["+ I18n.get("menu.paused") + " - " + I18n.get("gui.advancements") +"]");
@@ -190,7 +191,7 @@ public class WindowHandler {
                     TITLE = pauseGS.toString();
 
                     // GAME SCREEN TITLES
-                } else if (GAMESTATE_TYPE.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.ALL.name()) || GAMESTATE_TYPE.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.PLAYING_MODE_AND_EXTRA.name())) {
+                } else if (GAMESTATE_TYPE.equalsIgnoreCase(GamestateType.ALL.name()) || GAMESTATE_TYPE.equalsIgnoreCase(GamestateType.PLAYING_MODE_AND_EXTRA.name())) {
                     if (Minecraft.getInstance().screen != null && !Minecraft.getInstance().screen.getTitle().getString().isEmpty()) {
                         pauseGS.append(TITLE);
                         pauseGS.append(" ["+Minecraft.getInstance().screen.getTitle().getString()+"]");
@@ -199,7 +200,7 @@ public class WindowHandler {
                 }
 
                 // LOADING AND MAIN SCREEN
-            } else if (GAMESTATE_TYPE.equalsIgnoreCase(ConfigHandler.CLIENT.GamestateType.ALL.name())) {
+            } else if (GAMESTATE_TYPE.equalsIgnoreCase(GamestateType.ALL.name())) {
                 if (Minecraft.getInstance().screen != null && !Minecraft.getInstance().screen.getTitle().getString().isEmpty()) {
                     TITLE = TITLE.replace(CONFIG_SYNTAX.get(2), Minecraft.getInstance().screen.getTitle().getString());
                 } else if (IS_LOADING_SCREEN_GS_VISIBLE && Minecraft.getInstance().screen == null && Minecraft.checkModStatus().shouldReportAsModified()) {

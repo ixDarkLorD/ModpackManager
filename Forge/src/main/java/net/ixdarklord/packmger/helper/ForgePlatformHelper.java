@@ -1,10 +1,8 @@
 package net.ixdarklord.packmger.helper;
 
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.config.ConfigHandler;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.services.IPlatformHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
