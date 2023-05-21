@@ -80,7 +80,6 @@ public class ConfigHandler {
                     .comment(
                             "If the Modpack has Sodium/Rubidium mod installed, Set it to true!",
                             "To prevent crashing from happening by disabling the gamestate syntax",
-                            "Because sometimes Nvidia users will have some troubles",
                             "This option will be needless if the Window Title Changer feature is disabled!")
                     .define(KeyData.SAFE_WINDOW_TITLE.ID, false);
             IS_FIRST_TIME_PRESSED = BUILDER
