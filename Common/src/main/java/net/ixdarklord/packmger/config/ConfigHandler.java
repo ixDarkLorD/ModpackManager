@@ -23,6 +23,7 @@ public class ConfigHandler {
     public static void saveData() {
         if (isGameShutting) return;
         isGameShutting = true;
+        if (!Services.PLATFORM.isConfigLoaded()) return;
 
         CLIENT.DURABILITY_DISPLAY_SIZE.set(ItemDurability.CACHED_VALUE);
         Constants.LOGGER.info("[{}] Saving values in Config!", Constants.MOD_NAME);
