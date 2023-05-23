@@ -12,13 +12,11 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VersionCheckerButton extends ButtonBase {
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
@@ -56,16 +54,13 @@ public class VersionCheckerButton extends ButtonBase {
                     buttonFunction();
                 }
         );
-        if (!isInternetAvailable()) {
-            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
-            modButton.setMessage(new TextComponent(buttonMessage));
-        } else if (IS_FIRST_TIME_PRESSED) {
+        if (IS_FIRST_TIME_PRESSED) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.press_to_check");
             modButton.setMessage(new TextComponent(buttonMessage));
         } else {
-            if (!isProcessed) { isProcessed = true;
+            if (!isProcessed) {
                 buttonFunction();
-            } else {
+            } else if (!cachedValues.isEmpty()) {
                 updateButton();
                 adjustAlignment();
             }
@@ -74,9 +69,12 @@ public class VersionCheckerButton extends ButtonBase {
     }
 
     protected void buttonFunction() {
-        if (!isInternetAvailable()) {
+        isProcessed = true;
+
+        if (!isInternetReachable) {
             buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
             modButton.setMessage(new TextComponent(buttonMessage));
+            adjustAlignment();
             return;
         }
         if (!isUpdateAvailable) {
@@ -88,17 +86,26 @@ public class VersionCheckerButton extends ButtonBase {
             }
         }
     }
-    private boolean isInternetAvailable() {
+
+    private static boolean previousChecking;
+    public static void checkInternetConnectivity() {
         new Thread(() -> {
             try {
                 InetAddress address = InetAddress.getByName("www.google.com");
                 isInternetReachable = address.isReachable(5000); // Timeout in milliseconds
             } catch (IOException ignored) {
-                Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
+                isInternetReachable = false;
+                previousChecking = true;
             }
         }).start();
-        return isInternetReachable;
+
+        if (!IS_FIRST_TIME_PRESSED && isInternetReachable != previousChecking) {
+            modButton.onPress();
+        }
+
+        previousChecking = isInternetReachable;
     }
+
     @Override
     protected void updateButton() {
         if (isURLInvalid(UPDATE_KEY)) {
@@ -137,12 +144,12 @@ public class VersionCheckerButton extends ButtonBase {
 
     private void adjustAlignment() {
         int i = Math.max(0, Minecraft.getInstance().font.width(buttonMessage) - 200);
+        assert Minecraft.getInstance().screen != null;
         if (i > 0) {
             i += 10;
-            modButton.x = modButton.x - (i/2);
-            modButton.setWidth(modButton.getWidth() + i);
+            modButton.x = Minecraft.getInstance().screen.width / 2 - 100 - (i/2);
+            modButton.setWidth(200 + i);
         } else {
-            assert Minecraft.getInstance().screen != null;
             modButton.x = Minecraft.getInstance().screen.width / 2 - 100;
             modButton.setWidth(200);
         }

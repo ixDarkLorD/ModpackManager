@@ -1,15 +1,17 @@
 package net.ixdarklord.packmger.event;
 
-import net.ixdarklord.packmger.client.handler.KeyHandler;
+import net.ixdarklord.packmger.client.button.VersionCheckerButton;
 import net.ixdarklord.packmger.client.handler.ScreenHandler;
 import net.ixdarklord.packmger.client.handler.WindowHandler;
 import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.config.ConfigHandler;
 import net.ixdarklord.packmger.core.Constants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -34,6 +36,15 @@ public class ClientEvents {
 
     @Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
     public static class ClientForgeEvents {
+        @SubscribeEvent
+        public static void onClientTick(final TickEvent.ClientTickEvent evt) {
+            if (evt.phase == TickEvent.Phase.END) return;
+
+            if (Minecraft.getInstance().screen instanceof TitleScreen) {
+                VersionCheckerButton.checkInternetConnectivity();
+            }
+        }
+
         @SubscribeEvent
         public static void onKeyInput(InputEvent.KeyInputEvent evt) {
             KeyEvents.registerEvents(null);

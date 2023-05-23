@@ -1,7 +1,7 @@
 # Changelog
 This file is for listing all the changes to this project
 
-## v0.2.3 BETA | May 22, 2022
+## v0.2.3 BETA | May 23, 2022
 ### Added
 - Adding the new Requirement for FancyMenu `is Internet Available`
 - Adding toggle option for the Window Title Changer in the config

@@ -13,7 +13,8 @@ public class ScreenHandler {
         }
     }
     private static void titleScreenHandler(Screen screen) {
-        if (!ModCompatibility.isFancyMenuLoaded(false))
+        if (!ModCompatibility.isFancyMenuLoaded(false)) {
             new VersionCheckerButton(screen);
+        }
     }
 }
