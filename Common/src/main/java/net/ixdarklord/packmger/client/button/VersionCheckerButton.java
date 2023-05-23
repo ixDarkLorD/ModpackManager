@@ -14,8 +14,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.*;
 
 public class VersionCheckerButton extends ButtonBase {
@@ -89,16 +87,7 @@ public class VersionCheckerButton extends ButtonBase {
 
     private static boolean previousChecking;
     public static void checkInternetConnectivity() {
-        new Thread(() -> {
-            try {
-                InetAddress address = InetAddress.getByName("www.google.com");
-                isInternetReachable = address.isReachable(5000); // Timeout in milliseconds
-            } catch (IOException ignored) {
-                isInternetReachable = false;
-                previousChecking = true;
-            }
-        }).start();
-
+        new Thread(() -> isInternetReachable = WebUtils.isValidURL("http://www.google.com")).start();
         if (!IS_FIRST_TIME_PRESSED && isInternetReachable != previousChecking) {
             modButton.onPress();
         }
