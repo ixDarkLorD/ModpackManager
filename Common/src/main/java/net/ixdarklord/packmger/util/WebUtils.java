@@ -60,9 +60,7 @@ public class WebUtils {
         try {
             InetAddress address = InetAddress.getByName("www.google.com");
             isInternetReachable = address.isReachable(5000);
-        } catch (IOException e) {
-            Constants.LOGGER.error("Error occurred while checking internet connectivity.");
-        }
+        } catch (IOException ignored) {}
         return isInternetReachable;
     }
 }
