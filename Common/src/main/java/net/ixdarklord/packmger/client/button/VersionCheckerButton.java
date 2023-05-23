@@ -87,11 +87,10 @@ public class VersionCheckerButton extends ButtonBase {
 
     private static boolean previousChecking;
     public static void checkInternetConnectivity() {
-        new Thread(() -> isInternetReachable = WebUtils.isValidURL("http://www.google.com")).start();
+        new Thread(() -> isInternetReachable = WebUtils.isValidURL("https://www.google.com")).start();
         if (!IS_FIRST_TIME_PRESSED && isInternetReachable != previousChecking) {
             modButton.onPress();
         }
-
         previousChecking = isInternetReachable;
     }
 
