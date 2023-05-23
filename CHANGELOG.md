@@ -11,6 +11,7 @@ This file is for listing all the changes to this project
 
 ### Fixed
 - Fixing crashing issue related to FancyMenu
+- Fixing wrong information issue in the Title Screen Fabric Version
 
 ## v0.2.2 BETA | May 16, 2023
 ### Added
