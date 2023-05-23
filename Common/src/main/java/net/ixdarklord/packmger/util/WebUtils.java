@@ -1,8 +1,12 @@
 package net.ixdarklord.packmger.util;
 
+import net.ixdarklord.packmger.core.Constants;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 public class WebUtils {
@@ -47,5 +51,16 @@ public class WebUtils {
             }
         }
         return false;
+    }
+
+    public static boolean isInternetReachable() {
+        boolean isInternetReachable = false;
+        try {
+            InetAddress address = InetAddress.getByName("www.google.com");
+            isInternetReachable = address.isReachable(5000);
+        } catch (IOException e) {
+            Constants.LOGGER.error("Error occurred while checking internet connectivity.");
+        }
+        return isInternetReachable;
     }
 }
