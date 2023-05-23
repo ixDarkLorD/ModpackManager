@@ -68,13 +68,7 @@ public class VersionCheckerButton extends ButtonBase {
 
     protected void buttonFunction() {
         isProcessed = true;
-
-        if (!isInternetReachable) {
-            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
-            modButton.setMessage(Component.literal(buttonMessage));
-            adjustAlignment();
-            return;
-        }
+        if (!isInternetReachable) updateButton();
         if (!isUpdateAvailable) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.checking_for_update");
             modButton.setMessage(Component.literal(buttonMessage));
@@ -87,7 +81,7 @@ public class VersionCheckerButton extends ButtonBase {
 
     private static boolean previousChecking;
     public static void checkInternetConnectivity() {
-        new Thread(() -> isInternetReachable = WebUtils.isValidURL("https://www.google.com")).start();
+        new Thread(() -> isInternetReachable = WebUtils.isInternetReachable()).start();
         if (!IS_FIRST_TIME_PRESSED && isInternetReachable != previousChecking) {
             modButton.onPress();
         }
@@ -96,6 +90,13 @@ public class VersionCheckerButton extends ButtonBase {
 
     @Override
     protected void updateButton() {
+        if (!isInternetReachable) {
+            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
+            modButton.setMessage(Component.literal(buttonMessage));
+            adjustAlignment();
+            return;
+        }
+
         if (isURLInvalid(UPDATE_KEY)) {
             buttonMessage = "\u00A7c" + I18n.get("menu.packmger.connection_failed");
             modButton.setMessage(Component.literal(buttonMessage));

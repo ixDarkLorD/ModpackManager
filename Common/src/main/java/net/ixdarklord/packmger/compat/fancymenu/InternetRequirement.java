@@ -22,7 +22,7 @@ public class InternetRequirement extends LoadingRequirement {
 
     @Override
     public boolean isRequirementMet(@Nullable String value) {
-        new Thread(() -> isInternetReachable = WebUtils.isValidURL("https://www.google.com")).start();
+        new Thread(() -> isInternetReachable = WebUtils.isInternetReachable()).start();
         return isInternetReachable;
     }
 
