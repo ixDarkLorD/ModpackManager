@@ -1,7 +1,7 @@
 # Changelog
 This file is for listing all the changes to this project
 
-## v0.2.3 BETA | May 22, 2023
+## v0.2.3 BETA | May 23, 2023
 ### Added
 - Adding toggle option for the Window Title Changer in the config
 - Adding safe option for the Window Title Changer to fix an issue related to Sodium/Rubidium mod
