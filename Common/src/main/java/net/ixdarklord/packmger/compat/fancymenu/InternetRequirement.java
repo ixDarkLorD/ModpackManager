@@ -2,13 +2,10 @@ package net.ixdarklord.packmger.compat.fancymenu;
 
 import de.keksuccino.fancymenu.menu.fancy.helper.ui.texteditor.TextEditorFormattingRule;
 import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirement;
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.util.WebUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.List;
 
 public class InternetRequirement extends LoadingRequirement {
