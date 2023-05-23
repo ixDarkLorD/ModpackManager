@@ -11,6 +11,7 @@ This file is for listing all the changes to this project
 - Updating FancyMenu compat to the new system
 
 ### Fixed
+- Fixing crashing issue related to FancyMenu
 - Fixing wrong information issue in the Title Screen `Fabric Version`
 
 ## v0.2.1a BETA | Dec 29, 2022
