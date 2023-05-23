@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 public class WebUtils {
     public static String requestWebsiteData(String URL) {
