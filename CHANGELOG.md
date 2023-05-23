@@ -9,6 +9,9 @@ This file is for listing all the changes to this project
 ### Changed
 - Updating FancyMenu compat to the new system
 
+### Fixed
+- Fixing crashing issue related to FancyMenu
+
 ## v0.2.2 BETA | May 16, 2023
 ### Added
 - Adding the new Requirement for FancyMenu `is Internet Available`
