@@ -46,7 +46,7 @@ public class WebUtils {
                     int code = con.getResponseCode();
                     if (code == 200) return true;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Constants.LOGGER.error("Error occurred while checking for valid link");
                 }
             }
         }
