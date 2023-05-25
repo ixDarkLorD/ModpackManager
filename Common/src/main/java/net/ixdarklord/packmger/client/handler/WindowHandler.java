@@ -1,12 +1,9 @@
 package net.ixdarklord.packmger.client.handler;
 
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.compat.fancymenu.FancyMenuRegistry;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.GamestateType;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.SyntaxData;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -67,8 +64,10 @@ public class WindowHandler {
                     FancyMenuRegistry.modifyTitle(cleanedTitle);
                 }
 
-                updateGameState(holder);
-                updateUpdateHolder();
+                if (!ConfigHandler.CLIENT.SAFE_WINDOW_TITLE.get()) {
+                    updateGameState(holder);
+                    updateUpdateHolder();
+                }
             }
             return TITLE;
         }
@@ -109,19 +108,19 @@ public class WindowHandler {
                         data = data.substring(1);
                         CACHED_TITLE = CACHED_TITLE.replace(CONFIG_SYNTAX.get(1), data);
 
-                    //STARTUP TITLE VISIBILITY
+                        //STARTUP TITLE VISIBILITY
                     } else if (data.contains(CONFIG_VALUES.get(2)) && data.indexOf(CONFIG_VALUES.get(2)) == 1 && data.indexOf("") == 0) {
                         data = data.replace(CONFIG_VALUES.get(2), "");
                         data = data.substring(1);
                         IS_STARTUP_TITLE_VISIBLE = Boolean.parseBoolean(data);
 
-                    //STARTUP TITLE TEXT
+                        //STARTUP TITLE TEXT
                     } else if (data.contains(CONFIG_VALUES.get(3)) && data.indexOf(CONFIG_VALUES.get(3)) == 1 && data.indexOf("") == 0) {
                         data = data.replace(CONFIG_VALUES.get(3), "");
                         data = data.substring(1);
                         STARTUP_TITLE = data;
 
-                    //GAMESTATE TYPE
+                        //GAMESTATE TYPE
                     } else if (data.contains(CONFIG_VALUES.get(4)) && data.indexOf(CONFIG_VALUES.get(4)) == 1 && data.indexOf("") == 0) {
                         data = data.replace(CONFIG_VALUES.get(4), "");
                         data = data.substring(1);
@@ -137,13 +136,13 @@ public class WindowHandler {
                             GAMESTATE_TYPE = ConfigHandler.CLIENT.GamestateType.ALL.name();
                         }
 
-                    //LOADING SCREEN GAMESTATE VISIBILITY
+                        //LOADING SCREEN GAMESTATE VISIBILITY
                     } else if (data.contains(CONFIG_VALUES.get(5)) && data.indexOf(CONFIG_VALUES.get(5)) == 1 && data.indexOf("") == 0) {
                         data = data.replace(CONFIG_VALUES.get(5), "");
                         data = data.substring(1);
                         IS_LOADING_SCREEN_GS_VISIBLE = Boolean.parseBoolean(data);
 
-                    //LOADING SCREEN GAMESTATE TITLE
+                        //LOADING SCREEN GAMESTATE TITLE
                     } else if (data.contains(CONFIG_VALUES.get(6)) && data.indexOf(CONFIG_VALUES.get(6)) == 1 && data.indexOf("") == 0) {
                         data = data.replace(CONFIG_VALUES.get(6), "");
                         data = data.substring(1);

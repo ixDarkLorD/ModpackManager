@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(AbstractContainerScreen.class)
 public class MixinAbstractContainerScreen extends Screen {
-
     @Shadow @Nullable protected Slot hoveredSlot;
 
     protected MixinAbstractContainerScreen(Component pTitle) {

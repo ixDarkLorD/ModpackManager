@@ -2,12 +2,10 @@ package net.ixdarklord.packmger.compat.fancymenu;
 
 import de.keksuccino.fancymenu.menu.fancy.helper.ui.texteditor.TextEditorFormattingRule;
 import de.keksuccino.fancymenu.menu.loadingrequirement.v2.LoadingRequirement;
-import net.ixdarklord.packmger.core.Constants;
+import net.ixdarklord.packmger.util.WebUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.List;
 
 public class InternetRequirement extends LoadingRequirement {
@@ -24,14 +22,7 @@ public class InternetRequirement extends LoadingRequirement {
 
     @Override
     public boolean isRequirementMet(@Nullable String value) {
-        new Thread(() -> {
-            try {
-                InetAddress address = InetAddress.getByName("www.google.com");
-                isInternetReachable = address.isReachable(5000); // Timeout in milliseconds
-            } catch (IOException ignored) {
-                Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
-            }
-        }).start();
+        new Thread(() -> isInternetReachable = WebUtils.isInternetReachable()).start();
         return isInternetReachable;
     }
 

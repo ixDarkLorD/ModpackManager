@@ -14,10 +14,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VersionCheckerButton extends ButtonBase {
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
@@ -30,6 +27,7 @@ public class VersionCheckerButton extends ButtonBase {
 
     private static String buttonMessage;
     private static boolean isUpdateAvailable;
+    private static boolean isInternetReachable;
     private static boolean isProcessed;
     private static boolean isActivated;
     private final VersionUtils VC = new VersionUtils();
@@ -45,23 +43,19 @@ public class VersionCheckerButton extends ButtonBase {
         this.moveButtonsLayout(Services.BUTTON.buttonsList(event), Services.BUTTON.screenHeight(event) / 4 + 48 + 72 + 12 );
         int i = 24;
         modButton = Button.builder(Component.empty(), button -> {
-            IS_FIRST_TIME_PRESSED = false;
-            isActivated = false;
-            buttonFunction();
-        }).bounds(
-                Services.BUTTON.screenWidth(event) / 2 - 100,
-                Services.BUTTON.screenHeight(event) / 4 + 48 + 24 * 4 - i,
+                    IS_FIRST_TIME_PRESSED = false;
+                    isActivated = false;
+                    buttonFunction();
+                }).bounds(
+                Services.BUTTON.screenWidth(event) / 2 - 100, Services.BUTTON.screenHeight(event) / 4 + 48 + 24 * 4 - i,
                 200, 20).build();
-        if (!isInternetAvailable()) {
-            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
-            modButton.setMessage(Component.literal(buttonMessage));
-        } else if (IS_FIRST_TIME_PRESSED) {
+        if (IS_FIRST_TIME_PRESSED) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.press_to_check");
             modButton.setMessage(Component.literal(buttonMessage));
         } else {
-            if (!isProcessed) { isProcessed = true;
+            if (!isProcessed) {
                 buttonFunction();
-            } else {
+            } else if (!cachedValues.isEmpty()) {
                 updateButton();
                 adjustAlignment();
             }
@@ -69,23 +63,9 @@ public class VersionCheckerButton extends ButtonBase {
         Services.BUTTON.registerButton(event, modButton);
     }
 
-    private boolean isInternetAvailable() {
-        AtomicBoolean isInternetReachable = new AtomicBoolean(false);
-        try {
-            InetAddress address = InetAddress.getByName("www.google.com");
-            isInternetReachable.set(address.isReachable(5000)); // Timeout in milliseconds
-        } catch (IOException ignored) {
-            Constants.LOGGER.warn("Error occurred while checking internet connectivity! Check if you're connected to the internet");
-        }
-        return isInternetReachable.get();
-    }
-
     protected void buttonFunction() {
-        if (!isInternetAvailable()) {
-            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
-            modButton.setMessage(Component.literal(buttonMessage));
-            return;
-        }
+        isProcessed = true;
+        if (!isInternetReachable) updateButton();
         if (!isUpdateAvailable) {
             buttonMessage = "\u00A7f" + I18n.get("menu.packmger.checking_for_update");
             modButton.setMessage(Component.literal(buttonMessage));
@@ -95,8 +75,25 @@ public class VersionCheckerButton extends ButtonBase {
             }
         }
     }
+
+    private static boolean previousChecking;
+    public static void checkInternetConnectivity() {
+        new Thread(() -> isInternetReachable = WebUtils.isInternetReachable()).start();
+        if (!IS_FIRST_TIME_PRESSED && isInternetReachable != previousChecking) {
+            modButton.onPress();
+        }
+        previousChecking = isInternetReachable;
+    }
+
     @Override
     protected void updateButton() {
+        if (!isInternetReachable) {
+            buttonMessage = "\u00A7c" + I18n.get("menu.packmger.no_internet");
+            modButton.setMessage(Component.literal(buttonMessage));
+            adjustAlignment();
+            return;
+        }
+
         if (isURLInvalid(UPDATE_KEY)) {
             buttonMessage = "\u00A7c" + I18n.get("menu.packmger.connection_failed");
             modButton.setMessage(Component.literal(buttonMessage));
@@ -133,12 +130,12 @@ public class VersionCheckerButton extends ButtonBase {
 
     private void adjustAlignment() {
         int i = Math.max(0, Minecraft.getInstance().font.width(buttonMessage) - 200);
+        assert Minecraft.getInstance().screen != null;
         if (i > 0) {
             i += 10;
-            modButton.setX(modButton.getX() - (i/2));
-            modButton.setWidth(modButton.getWidth() + i);
+            modButton.setX(Minecraft.getInstance().screen.width / 2 - 100 - (i/2));
+            modButton.setWidth(200 + i);
         } else {
-            assert Minecraft.getInstance().screen != null;
             modButton.setX(Minecraft.getInstance().screen.width / 2 - 100);
             modButton.setWidth(200);
         }

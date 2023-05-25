@@ -11,7 +11,7 @@ public class FancyMenuRegistry {
         try {
             ButtonActionRegistry.registerButtonAction(new ModpackCheckingUpdateButton());
             LoadingRequirementRegistry.registerRequirement(new InternetRequirement());
-            LoadingRequirementRegistry.registerRequirement(new ModpackVersionRequirement());
+            LoadingRequirementRegistry.registerRequirement(new ModpackUpdateRequirement());
             PlaceholderRegistry.registerPlaceholder(new ModpackTitlePlaceholder());
             PlaceholderRegistry.registerPlaceholder(new ModpackVersionPlaceholder());
             PlaceholderRegistry.registerPlaceholder(new ModpackUrlVersionPlaceholder());

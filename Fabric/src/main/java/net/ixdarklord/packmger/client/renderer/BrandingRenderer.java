@@ -2,7 +2,6 @@ package net.ixdarklord.packmger.client.renderer;
 
 import com.google.common.collect.Lists;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.compat.modmenu.ModMenuHandler;
 import net.ixdarklord.packmger.config.ConfigHandler;
@@ -20,7 +19,13 @@ public class BrandingRenderer {
     private static void compute() {
         if (brandings.isEmpty()) {
             List<String> brd = new ArrayList<>();
-            brd.add("Fabric " + FabricLoaderImpl.VERSION);
+            var loader = FabricLoader.getInstance();
+
+            if (loader.getModContainer("quilt_loader").isPresent()) {
+                brd.add("Quilt " + loader.getModContainer("quilt_loader").get().getMetadata().getVersion().getFriendlyString());
+            } else if (loader.getModContainer("fabricloader").isPresent())
+                brd.add("Fabric " + loader.getModContainer("fabricloader").get().getMetadata().getVersion().getFriendlyString());
+
             brd.add("Minecraft " + SharedConstants.getCurrentVersion().getName() + (Minecraft.getInstance().isDemo() ? " | Demo" : ""));
             if (!ConfigHandler.CLIENT.getTitleName().equalsIgnoreCase("Minecraft")) {
                 brd.add(String.format("%s %s", ConfigHandler.CLIENT.getTitleName(), ConfigHandler.CLIENT.MODPACK_VERSION.get()));
@@ -33,7 +38,7 @@ public class BrandingRenderer {
             brandings = brd;
         }
         if (ModCompatibility.isModMenuLoaded(false)) {
-            brandings = ModMenuHandler.listUpdater(brandings);
+            ModMenuHandler.listUpdater(brandings);
         }
     }
     private static List<String> getList(boolean reverse) {

@@ -39,13 +39,13 @@ public abstract class MixinTitleScreen extends Screen {
         float f1 = fading ? (float)(Util.getMillis() - fadeInStart) / 1000.0F : 1.0F;
         float f2 = fading ? Mth.clamp(f1 - 1.0F, 0.0F, 1.0F) : 1.0F;
         int height = (Minecraft.getInstance().screen != null) ? Minecraft.getInstance().screen.height : 0;
-        BrandingRenderer.forEachLine(true, (lineIndex, brd) -> {
-            GuiComponent.drawString(poseStack, Minecraft.getInstance().font, brd, 2, height - ( 10 + lineIndex * (Minecraft.getInstance().font.lineHeight + 1)), 16777215 | Mth.ceil(f2 * 255.0F) << 24);
-        });
+        BrandingRenderer.forEachLine(true, (lineIndex, brd) ->
+                GuiComponent.drawString(poseStack, Minecraft.getInstance().font, brd, 2, height - ( 10 + lineIndex * (Minecraft.getInstance().font.lineHeight + 1)), 16777215 | Mth.ceil(f2 * 255.0F) << 24));
     }
 
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void addCFUButton(CallbackInfo ci) {
+        if (VersionCheckerButton.screenEvent == null) return;
         if (!Services.BUTTON.ifPresent(VersionCheckerButton.screenEvent, VersionCheckerButton.modButton)) {
             this.addRenderableWidget(VersionCheckerButton.modButton);
         }

@@ -18,7 +18,7 @@ public class ModMenuHandler {
             return (I18n.get("menu.packmger.compat.loading_mods.include_lib", countSet.get(0), countSet.get(1)));
         }
     }
-    public static List<String> listUpdater(List<String> brd) {
+    public static void listUpdater(List<String> brd) {
         String raw = (brd.size() != 0) ? brd.get(brd.size()-1) : "";
         List<Integer> countSet = getCount(true);
         if (countSet.size() < 2) {
@@ -30,7 +30,6 @@ public class ModMenuHandler {
                 brd.clear();
             }
         }
-        return brd;
     }
     private static List<Integer> getCount(boolean includeLib) {
         List<Integer> modsSet = new ArrayList<>();

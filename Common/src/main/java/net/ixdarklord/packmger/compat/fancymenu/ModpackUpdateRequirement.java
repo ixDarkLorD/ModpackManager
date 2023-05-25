@@ -10,13 +10,14 @@ import net.ixdarklord.packmger.util.ManagerUtils;
 import net.ixdarklord.packmger.util.VersionUtils;
 import net.ixdarklord.packmger.util.WebUtils;
 import net.minecraft.SharedConstants;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 import static net.ixdarklord.packmger.compat.fancymenu.ModpackCheckingUpdateButton.isUpdateAvailable;
 
-public class ModpackVersionRequirement extends LoadingRequirement {
+public class ModpackUpdateRequirement extends LoadingRequirement {
 
     private static final String IDENTIFIER = ConfigHandler.CLIENT.MODPACK_UPDATE_IDENTIFIER.get();
     private static final String CURRENT_VERSION = ConfigHandler.CLIENT.MODPACK_VERSION.get();
@@ -24,15 +25,15 @@ public class ModpackVersionRequirement extends LoadingRequirement {
     private static final String REQUIREMENT_NAME = "Is Update Available";
     private static final String[] REQUIREMENT_DESC = new String[] {
             "This requirement will behave depending on new update availability!",
-            "If there is an update, it will sit true. Otherwise, it will sit to false."
+            "If there is an update, it will sit to true. Otherwise, it will sit to false."
     };
-    private static Map<String, List<String>> cachedValues = new HashMap<>();
-    private static List<String> invalidURL = new ArrayList<>();
-    private static List<String> currentlyUpdatingPlaceholders = new ArrayList<>();
+    private static final Map<String, List<String>> cachedValues = new HashMap<>();
+    private static final List<String> invalidURL = new ArrayList<>();
+    private static final List<String> currentlyUpdatingPlaceholders = new ArrayList<>();
     VersionUtils VC = new VersionUtils();
 
-    public ModpackVersionRequirement() {
-        super("modpack_version_requirement");
+    public ModpackUpdateRequirement() {
+        super("modpack_update_requirement");
     }
 
     public static void reloadMenu(boolean isDebugMode) {
@@ -46,7 +47,6 @@ public class ModpackVersionRequirement extends LoadingRequirement {
             ex.printStackTrace();
         }
     }
-
     @Override
     public boolean isRequirementMet(@Nullable String value) {
         if (!ModpackCheckingUpdateButton.isFirstTimePressed) {
@@ -128,7 +128,7 @@ public class ModpackVersionRequirement extends LoadingRequirement {
     }
 
     @Override
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return REQUIREMENT_NAME;
     }
 
