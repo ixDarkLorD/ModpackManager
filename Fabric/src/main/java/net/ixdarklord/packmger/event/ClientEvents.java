@@ -9,7 +9,7 @@ import net.ixdarklord.packmger.client.handler.ScreenHandler;
 public class ClientEvents {
     public static void register() {
         KeyHandler.registerKeys(null);
-        ClientTickEvents.START_CLIENT_TICK.register(client -> VersionCheckerButton.checkInternetConnectivity());
+        ClientTickEvents.START_CLIENT_TICK.register(VersionCheckerButton::checkInternetConnectivity);
         ClientTickEvents.END_CLIENT_TICK.register(KeyEvents::registerEvents);
         ScreenEvents.AFTER_INIT.register(ScreenHandler::onScreenInitPost);
     }

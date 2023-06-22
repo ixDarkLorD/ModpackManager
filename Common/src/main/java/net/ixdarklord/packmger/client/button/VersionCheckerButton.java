@@ -11,6 +11,7 @@ import net.ixdarklord.packmger.util.WebUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 
@@ -80,7 +81,10 @@ public class VersionCheckerButton extends ButtonBase {
     }
 
     private static boolean previousChecking;
-    public static void checkInternetConnectivity() {
+    public static void checkInternetConnectivity(Minecraft MC) {
+        if (!(MC.screen instanceof TitleScreen)) return;
+        if (modButton == null) return;
+
         new Thread(() -> isInternetReachable = WebUtils.isInternetReachable()).start();
         if (!IS_FIRST_TIME_PRESSED && isInternetReachable != previousChecking) {
             modButton.onPress();

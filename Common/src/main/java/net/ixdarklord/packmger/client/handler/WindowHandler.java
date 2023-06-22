@@ -1,12 +1,9 @@
 package net.ixdarklord.packmger.client.handler;
 
-import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.compat.fancymenu.FancyMenuRegistry;
 import net.ixdarklord.packmger.config.ConfigHandler;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.GamestateType;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.KeyData;
-import net.ixdarklord.packmger.config.ConfigHandler.CLIENT.SyntaxData;
+import net.ixdarklord.packmger.core.Constants;
 import net.ixdarklord.packmger.helper.Services;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
