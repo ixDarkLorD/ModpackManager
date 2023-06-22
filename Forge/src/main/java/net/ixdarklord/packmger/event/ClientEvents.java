@@ -7,7 +7,6 @@ import net.ixdarklord.packmger.compat.ModCompatibility;
 import net.ixdarklord.packmger.config.ConfigHandler;
 import net.ixdarklord.packmger.core.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,9 +39,7 @@ public class ClientEvents {
         public static void onClientTick(final TickEvent.ClientTickEvent evt) {
             if (evt.phase == TickEvent.Phase.END) return;
 
-            if (Minecraft.getInstance().screen instanceof TitleScreen) {
-                VersionCheckerButton.checkInternetConnectivity();
-            }
+            VersionCheckerButton.checkInternetConnectivity(Minecraft.getInstance());
         }
 
         @SubscribeEvent
