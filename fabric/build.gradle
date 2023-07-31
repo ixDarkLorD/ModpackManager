@@ -1,0 +1,153 @@
+plugins {
+    id 'fabric-loom'
+
+    id 'net.darkhax.curseforgegradle'
+    id 'com.modrinth.minotaur'
+}
+
+base {
+    archivesName = "${modid}-fabric"
+}
+
+repositories {
+    maven {
+        name = 'Terraformers'
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    // Minecraft
+    minecraft "com.mojang:minecraft:${mc_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+//        parchment("org.parchmentmc.data:parchment-${mc_version}:${parchment_mappings_version}@zip")
+    }
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${mc_version}"
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    implementation project(":common")
+
+    // Config Dependencies
+    implementation 'com.electronwill.night-config:core:3.6.6'
+    implementation 'com.electronwill.night-config:toml:3.6.6'
+    modImplementation "curse.maven:forge-config-api-port-fabric-547434:4583000" //ForgeConfigAPIPort-v4.2.10
+
+    // Mods
+    modCompileOnly "curse.maven:konkrete-fabric-416797:4581979"
+    modCompileOnly "curse.maven:fancymenu-fabric-416796:4584011"
+    modCompileOnly "com.terraformersmc:modmenu:7.2.1"
+}
+
+loom {
+    //accessWidenerPath = file("src/main/resources/${modid}.accesswidener")
+
+    mixin {
+        defaultRefmapName = "${modid}.refmap.json"
+    }
+
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
+            vmArg "-Dmixin.debug.export=${mixin_debug}"
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run")
+            vmArg "-Dmixin.debug.export=${mixin_debug}"
+        }
+    }
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+    exclude("**/quilt.mod.json")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+tasks.withType(Javadoc).configureEach {
+    source(project(":common").sourceSets.main.allJava)
+}
+tasks.named("sourcesJar", Jar) {
+    from(project(":common").sourceSets.main.allSource)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+task curseforge(type: TaskPublishCurseForge) {
+    if (!file('../CHANGELOG.md').canRead()) { throw new FileNotFoundException("Could not read changelog file") }
+
+    disableVersionDetection()
+    apiToken = curseforge_api_token
+
+    def mainFile = upload(project_curse_id, remapJar)
+    mainFile.changelog = file('../CHANGELOG.md')
+    mainFile.changelogType = 'markdown'
+    mainFile.displayName = "[Fabric] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
+    mainFile.releaseType = project_release_type
+    mainFile.addRequirement('forge-config-api-port-fabric')
+    mainFile.addOptional('fancymenu-fabric')
+    mainFile.addGameVersion("Fabric")
+    project_game_versions.split(",").each {
+        mainFile.addGameVersion(it.trim())
+    }
+}
+
+modrinth {
+    if (!file('../CHANGELOG.md').canRead()) { throw new FileNotFoundException("Could not read changelog file") }
+
+    token = modrinth_api_token
+
+    projectId = project_modrinth_id
+    versionNumber = project.version
+    versionName = "[Fabric] ${mc_version} | v${mod_version} " + rootProject.UppercaseString("${project_release_type}")
+    changelog = file('../CHANGELOG.md').text
+    versionType = project_release_type
+    uploadFile = remapJar
+    loaders.add 'fabric'
+    dependencies {
+        required.project "forge-config-api-port"
+        optional.project "fancymenu"
+    }
+    project_game_versions.split(",").each {
+        gameVersions.add(it.trim())
+    }
+}
+
+task copyJarToDir(type: Copy) {
+    onlyIf { project.hasProperty('build_jar_output_dir') && project.hasProperty('unique_build_number') }
+    if (project.findProperty('copy_build_jar').toBoolean()) {
+        from remapJar
+        into project.findProperty('build_jar_output_dir')
+        // add build number to be able to distinguish jars when testing thorough official launcher
+        // build number is stored in global gradle.properties
+        rename { fileName -> fileName.replace("v${mod_version}", "v${mod_version}-build.${unique_build_number}") }
+    }
+}
+
+build.finalizedBy project.tasks.copyJarToDir, rootProject.tasks.incrementBuildNumber

@@ -1,0 +1,177 @@
+plugins {
+    id 'fabric-loom' version '1.2-SNAPSHOT' apply(false)
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)' apply(false)
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+' apply(false)
+    id ("org.spongepowered.mixin") version "0.7-SNAPSHOT" apply(false)
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT' apply(false)
+    id 'net.darkhax.curseforgegradle' version '1.0.11' apply(false)
+    id 'com.modrinth.minotaur' version '2.+' apply(false)
+}
+
+apply from: './gradle/tasks.gradle'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'idea'
+
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.withSourcesJar()
+//    java.withJavadocJar()
+
+    version = "${mc_version}-v${mod_version}-${project_release_type}"
+    group = "${mod_maven_group}.${modid}"
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'Sponge / Mixin'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+        maven {
+            name = 'BlameJared Maven (JEI / CraftTweaker / Bookshelf)'
+            url = 'https://maven.blamejared.com'
+        }
+        maven {
+            name = 'Parchment'
+            url = 'https://maven.parchmentmc.org'
+        }
+        maven {
+            name = 'Curse Maven'
+            url = 'https://cursemaven.com'
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        // ensure that the encoding is set to UTF-8, no matter what the system default is
+        // this fixes some edge cases with special characters not displaying correctly
+        // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+        // If Javadoc is generated, this must be specified in that task too.
+        options.encoding = 'UTF-8'
+        options.release = 17
+    }
+
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_${mod_name}" }
+        }
+        manifest {
+            attributes([
+                    "Specification-Title"               : mod_name,
+                    'Specification-Version'             : mod_version,
+                    "Specification-Vendor"              : mod_author,
+                    'Implementation-Title'              : mod_name,
+                    'Implementation-Version'            : mod_version,
+                    'Implementation-Vendor'             : mod_author,
+                    'Implementation-Timestamp'          : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'Implementation-Timestamp-Milli'    : System.currentTimeMillis(),
+                    'Implementation-URL'                : mod_source_url,
+                    'Built-On-Java'                     : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+                    'Built-On-Minecraft'                : mc_version
+            ])
+        }
+        group 'jar'
+    }
+
+    processResources {
+        duplicatesStrategy DuplicatesStrategy.INCLUDE
+        inputs.property "modId",                    "${modid}"
+        inputs.property "modName",                  "${mod_name}"
+        inputs.property "modVersion",               "${mod_version}"
+        inputs.property "packFormat",               "${pack_format}"
+        inputs.property "modDescription",           "${mod_description}"
+        inputs.property "modAuthor",                "${mod_author}"
+        inputs.property "modLicense",               "${mod_license}"
+        inputs.property "modGroup",                 project.group
+        inputs.property "modPageUrl",               "${mod_page_url}"
+        inputs.property "modUpdateUrl",             "${mod_update_url}"
+        inputs.property "modIssueUrl",              "${mod_issue_url}"
+        inputs.property "modSourceUrl", 		    "${mod_source_url}"
+        inputs.property "minMinecraftVersion",      "${min_mc_version}"
+        inputs.property "nextMinecraftVersion",     getNextVersion("${min_mc_version}")
+
+        // Forge
+        inputs.property "minFMLVersion",            "${min_forge_version}".replaceAll("\\..*", "")
+        inputs.property "minForgeVersion",          "${min_forge_version}"
+        inputs.property "modForgeDisplayTest",      "${mod_forge_display_test}"
+
+        // Fabric
+        inputs.property "minFabricVersion", 		"${min_fabric_version}"
+        inputs.property "minFabricApiVersion", 		"${min_fabric_api_version}"
+        inputs.property "mainEntryPoint", 			"${project.group}.core.FabricSetup"
+        inputs.property "clientEntryPoint", 		"${project.group}.core.FabricClientSetup"
+        inputs.property "modFabricEnvironment", 	"${mod_fabric_environment}"
+
+        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
+            expand (
+                    'modId':                        "${modid}",
+                    'modName':                      "${mod_name}",
+                    'modVersion':                   "${mod_version}",
+                    'packFormat':                   "${pack_format}",
+                    'modDescription':               "${mod_description}",
+                    'modAuthor':                    "${mod_author}",
+                    'modLicense':                   "${mod_license}",
+                    'modPageUrl':                   "${mod_page_url}",
+                    'modUpdateUrl':                 "${mod_update_url}",
+                    'modIssueUrl':                  "${mod_issue_url}",
+                    'modSourceUrl':                 "${mod_source_url}",
+                    'minMinecraftVersion':          "${min_mc_version}",
+                    'nextMinecraftVersion':         getNextVersion("${min_mc_version}"),
+
+                    // Forge
+                    'minFMLVersion':                "${min_forge_version}".replaceAll("\\..*", ""),
+                    'minForgeVersion':              "${min_forge_version}",
+                    'modForgeDisplayTest':          "${mod_forge_display_test}",
+
+                    // Fabric
+                    'minFabricVersion':     	    "${min_fabric_version}",
+                    'minFabricApiVersion':  	    "${min_fabric_api_version}",
+                    'mainEntryPoint': 			    "${project.group}.core.FabricSetup",
+                    'clientEntryPoint': 		    "${project.group}.core.FabricClientSetup",
+                    'modFabricEnvironment':		    "${mod_fabric_environment}"
+            )
+        }
+    }
+
+    tasks.withType(GenerateModuleMetadata) {
+        // Disables Gradle's custom module metadata from being published to maven. The
+        // metadata includes mapped dependencies which are not reasonably consumable by
+        // other mod developers.
+        enabled = false
+    }
+}
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+import java.util.regex.Pattern
+
+task incrementBuildNumber {
+    onlyIf { project.hasProperty('copy_build_jar') && project.hasProperty('unique_build_number') }
+    doLast {
+        def propertiesName = 'gradle.properties'
+        // build number is stored in global gradle.properties
+        def propertiesFile = new File(project.gradle.gradleUserHomeDir, propertiesName)
+        if (!propertiesFile.canRead()) { throw new FileNotFoundException("Could not read file ".concat(propertiesName)) }
+        def properties = new Properties()
+        properties.load(file(propertiesFile).newDataInputStream())
+        if (Boolean.parseBoolean(properties['separate_unique_build_numbers'])) {
+            propertiesFile = new File(getRootDir(), propertiesName)
+        }
+        def buildNumberMatcher = Pattern.compile("unique_build_number=(\\d+)").matcher(propertiesFile.getText())
+        buildNumberMatcher.find()
+        def versionCode = Integer.parseInt(buildNumberMatcher.group(1))
+        def propertiesContent = buildNumberMatcher.replaceAll("unique_build_number=" + ++versionCode)
+        propertiesFile.write(propertiesContent)
+    }
+}
+
+def static getNextVersion(String ver) {
+    def versionMatcher = Pattern.compile("(\\d+\\.\\d+)").matcher(ver)
+    versionMatcher.find()
+    def currentVersion = versionMatcher.group(1)
+    return currentVersion.substring(0, currentVersion.indexOf(".") + 1).concat(String.valueOf(Integer.parseInt(currentVersion.substring(currentVersion.indexOf(".") + 1, currentVersion.size())) + 1))
+}
+
+def static UppercaseString(String str) {
+    return str.toUpperCase()
+}

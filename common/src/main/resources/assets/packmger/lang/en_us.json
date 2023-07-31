@@ -1,0 +1,30 @@
+{
+  "menu.packmger.loading_mods": "%s Mods/Libraries loaded",
+  "menu.packmger.compat.loading_mods": "%s Mods loaded",
+  "menu.packmger.compat.loading_mods.include_lib": "(%s Mods | %s Library) loaded",
+
+  "menu.packmger.no_internet": "Check your network connection. Try Again!",
+  "menu.packmger.press_to_check": "Press to check for updates!",
+  "menu.packmger.checking_for_update": "Checking for updates...",
+  "menu.packmger.no_updates": "No Updates Available!",
+  "menu.packmger.update_available": "Update Available: %s",
+  "menu.packmger.invalid_manifest": "Failed to verify the manifest! Check logs!",
+  "menu.packmger.connection_failed": "Failed to connect to server!",
+
+  "menu.packmger.warn.curse.identifier_dissimilar": "The curse project slug value doesn't match with the modpack config files! \nMake sure that the slug value is equal to the identifier in the config.",
+  "menu.packmger.warn.url.identifier_dissimilar": "The JSON identifier value doesn't match with the modpack config files! \nMake sure that the JSON identifier value is equal to the one in the config.",
+  "menu.packmger.error.curse.connection_failed": "Failed to connect to Curse Project ID: %s",
+  "menu.packmger.error.url.connection_failed": "Failed to connect to URL: %s",
+
+  "action.packmger.durability_display_size": "Durability Display Size: %s",
+  "action.packmger.toggle_durability_on": "Durability Display Visibility: %sON",
+  "action.packmger.toggle_durability_off": "Durability Display Visibility: %sOFF",
+  "action.packmger.add_item_blacklist": "Added item to blacklist: %s",
+  "action.packmger.remove_item_blacklist": "Removed item from blacklist: %s",
+
+  "key.category.packmger.general": "Modpack Manager",
+  "key.packmger.increase_durability_display": "Increase size (Durability Display)",
+  "key.packmger.decrease_durability_display": "Decrease size (Durability Display)",
+  "key.packmger.toggle_durability": "Toggle Durability Display",
+  "key.packmger.hide_durability": "Toggle Durability Display (per item)"
+}

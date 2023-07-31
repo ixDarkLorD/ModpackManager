@@ -1,0 +1,29 @@
+{
+  "menu.packmger.loading_mods": "%s已加载的模组/库",
+  "menu.packmger.compat.loading_mods": "%s已加载模组",
+  "menu.packmger.compat.loading_mods.include_lib": "（%s模组|%s库）已加载",
+
+  "menu.packmger.press_to_check": "检查更新！",
+  "menu.packmger.checking_for_update": "正在检查更新...",
+  "menu.packmger.no_updates": "没有可用的更新！",
+  "menu.packmger.update_available": "可用更新：%s",
+  "menu.packmger.invalid_manifest": "无法验证清单！检查日志！",
+  "menu.packmger.connection_failed": "无法连接到服务器！",
+
+  "menu.packmger.warn.curse.identifier_dissimilar": "curse项目slug与整合包配置文件不匹配！\n确保slug值与配置中的标识符相同。",
+  "menu.packmger.warn.url.identifier_dissimilar": "JSON标识符值与模组配置文件不匹配！\n确保JSON标识符值与配置中的值相同。",
+  "menu.packmger.error.curse.connection_failed": "无法连接到Curse项目 ID：%s",
+  "menu.packmger.error.url.connection_failed": "无法连接到网址：%s",
+
+  "action.packmger.durability_display_size": "耐久显示尺寸：%s",
+  "action.packmger.toggle_durability_on": "耐久显示可见：%s开",
+  "action.packmger.toggle_durability_off": "耐久显示可见：%s关",
+  "action.packmger.add_item_blacklist": "已将物品添加到黑名单：%s",
+  "action.packmger.remove_item_blacklist": "已将物品移除出黑名单：%s",
+
+  "key.category.packmger.general": "模组管理器",
+  "key.packmger.increase_durability_display": "增加尺寸（耐久显示）",
+  "key.packmger.decrease_durability_display": "减小尺寸（耐久显示）",
+  "key.packmger.toggle_durability": "切换耐久显示",
+  "key.packmger.hide_durability": "切换耐久显示（每个物品）"
+}

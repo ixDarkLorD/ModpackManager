@@ -1,0 +1,74 @@
+plugins {
+    //id 'org.quiltmc.loom' version '0.12.+'
+    id 'org.spongepowered.gradle.vanilla'
+}
+
+base {
+    archivesName = "${modid}-common"
+}
+
+minecraft {
+    version(mc_version)
+    if(file("src/main/resources/${modid}.accesswidener").exists()){
+        accessWideners(file("src/main/resources/${modid}.accesswidener"))
+    }
+}
+
+dependencies {
+    // Minecraft
+    /*minecraft "com.mojang:minecraft:${mc_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${mc_version}:${parchment_mappings_version}@zip")
+    }*/
+
+    // Dependencies
+    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+
+    // Config Dependencies
+    compileOnly "curse.maven:forge-config-api-port-fabric-547434:4583000" //ForgeConfigAPIPort-v8.0.0
+
+    // Mods
+    compileOnly "curse.maven:konkrete-fabric-416797:4581980"
+    compileOnly "curse.maven:fancymenu-fabric-416796:4584011"
+}
+
+/*loom {
+    mixin {
+        defaultRefmapName = "${modid}.refmap.json"
+        useLegacyMixinAp = false
+    }
+
+    runs {
+        client {
+            client()
+            setConfigName("Common Client")
+            ideConfigGenerated(false)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("Common Server")
+            ideConfigGenerated(false)
+            runDir("run")
+        }
+    }
+}*/
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
